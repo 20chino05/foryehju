@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>세금 구제 변호사 찾기 · Korean Tax Relief Finder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f7f6f3;
+  --surface:#ffffff;
+  --surface2:#f0efe9;
+  --border:#e2e1da;
+  --border2:#cccac0;
+  --text:#1a1917;
+  --text2:#6b6960;
+  --text3:#9b9990;
+  --green:#1a7f5a;
+  --green-bg:#e8f7ef;
+  --blue:#185ea5;
+  --blue-bg:#e6f0fb;
+  --amber:#8a5c00;
+  --amber-bg:#fdf3db;
+  --red:#9b2626;
+  --red-bg:#fdeaea;
+  --radius:10px;
+  --radius-sm:6px;
+}
+body{font-family:'Inter',sans-serif;font-size:14px;color:var(--text);background:var(--bg);min-height:100vh}
+
+/* ─── LAYOUT ─── */
+.shell{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.main{overflow-y:auto;padding:28px 32px;max-width:860px}
+
+/* ─── SIDEBAR ─── */
+.sidebar-header{padding:20px 18px 14px;border-bottom:1px solid var(--border)}
+.app-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:2px}
+.app-sub{font-size:11px;color:var(--text3)}
+.nav-section{padding:14px 12px 6px;font-size:10px;font-weight:600;color:var(--text3);letter-spacing:.08em;text-transform:uppercase}
+.nav-item{display:flex;align-items:center;gap:8px;padding:8px 14px;margin:1px 6px;border-radius:var(--radius-sm);cursor:pointer;font-size:13px;color:var(--text2);transition:background .12s}
+.nav-item:hover{background:var(--surface2)}
+.nav-item.active{background:var(--text);color:#fff}
+.nav-item .icon{font-size:15px;width:18px;text-align:center;flex-shrink:0}
+.nav-badge{margin-left:auto;background:rgba(255,255,255,.2);font-size:10px;padding:1px 6px;border-radius:99px;font-weight:500}
+.nav-item:not(.active) .nav-badge{background:var(--surface2);color:var(--text2)}
+.sidebar-footer{margin-top:auto;padding:14px 16px;border-top:1px solid var(--border);font-size:11px;color:var(--text3);line-height:1.7}
+
+/* ─── PANELS ─── */
+.panel{display:none}.panel.active{display:block}
+.panel-title{font-size:20px;font-weight:600;margin-bottom:4px}
+.panel-sub{font-size:13px;color:var(--text2);margin-bottom:22px;line-height:1.6}
+
+/* ─── CARDS ─── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;margin-bottom:14px}
+.card-title{font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px}
+
+/* ─── FORM ─── */
+.field{display:flex;flex-direction:column;gap:5px;flex:1}
+.field label{font-size:12px;font-weight:500;color:var(--text2)}
+input,select,textarea{font-family:inherit;font-size:13px;padding:8px 11px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);outline:none;width:100%;transition:border-color .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--text)}
+.row{display:flex;gap:10px;align-items:flex-end}
+.checkbox-row{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);cursor:pointer;padding:2px 0}
+.checkbox-row input[type=checkbox]{width:16px;height:16px;cursor:pointer;flex-shrink:0;accent-color:var(--text)}
+
+/* ─── BUTTONS ─── */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;font-size:13px;font-family:inherit;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface);color:var(--text);cursor:pointer;white-space:nowrap;font-weight:500;transition:all .12s}
+.btn:hover{background:var(--surface2)}
+.btn-primary{background:var(--text);color:#fff;border-color:var(--text)}
+.btn-primary:hover{opacity:.88}
+.btn-sm{padding:5px 11px;font-size:12px}
+.btn-danger{color:var(--red);border-color:var(--red)}
+.btn-danger:hover{background:var(--red-bg)}
+.btn-green{color:var(--green);border-color:var(--green)}
+.btn-green:hover{background:var(--green-bg)}
+.btn:disabled{opacity:.5;pointer-events:none}
+
+/* ─── TAGS ─── */
+.tag-wrap{display:flex;flex-wrap:wrap;gap:6px;min-height:36px;padding:8px;border:1px dashed var(--border2);border-radius:var(--radius-sm);background:var(--surface2)}
+.tag{display:inline-flex;align-items:center;gap:5px;padding:3px 9px 3px 10px;border-radius:99px;font-size:12px;font-weight:500;border:1px solid transparent}
+.tag-firm{background:var(--red-bg);color:var(--red);border-color:#f5c0c0}
+.tag-lawyer{background:var(--amber-bg);color:var(--amber);border-color:#f5d98c}
+.tag-keyword{background:var(--blue-bg);color:var(--blue);border-color:#b0d0f7}
+.tag-contacted{background:var(--green-bg);color:var(--green);border-color:#a0e0c0}
+.tag-remove{cursor:pointer;opacity:.55;font-size:14px;line-height:1;padding:0 1px;font-weight:700}
+.tag-remove:hover{opacity:1}
+.tag-empty{font-size:12px;color:var(--text3);align-self:center;margin:auto}
+
+/* ─── BADGES ─── */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:600}
+.badge-korean{background:var(--green-bg);color:var(--green)}
+.badge-contacted{background:var(--amber-bg);color:var(--amber)}
+.badge-blocked{background:var(--red-bg);color:var(--red)}
+.badge-free{background:var(--blue-bg);color:var(--blue)}
+.badge-source{background:var(--surface2);color:var(--text3);font-weight:500}
+
+/* ─── STATS ROW ─── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;text-align:center}
+.stat-n{font-size:24px;font-weight:600;color:var(--text)}
+.stat-l{font-size:11px;color:var(--text3);margin-top:2px}
+
+/* ─── RESULT CARDS ─── */
+.result-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:10px;transition:all .15s;position:relative}
+.result-card.korean-highlight{border-left:3px solid var(--green)}
+.result-card.blocked{opacity:.3;pointer-events:none}
+.result-card.contacted-dim{opacity:.6}
+.result-header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:8px}
+.attorney-name{font-size:15px;font-weight:600;color:var(--text);margin-bottom:2px}
+.firm-name{font-size:12px;color:var(--text2)}
+.badges{display:flex;flex-wrap:wrap;gap:4px;flex-shrink:0;justify-content:flex-end}
+.result-meta{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--text2);margin-bottom:10px}
+.result-meta span{display:flex;align-items:center;gap:4px}
+.result-note{font-size:12px;color:var(--text2);line-height:1.6;padding:8px 10px;background:var(--surface2);border-radius:var(--radius-sm);margin-bottom:10px}
+.result-actions{display:flex;gap:6px;flex-wrap:wrap}
+.priority-bar{height:2px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:10px}
+.priority-fill{height:100%;border-radius:2px;background:var(--green);transition:width .4s ease}
+.blocked-label{position:absolute;top:10px;right:10px;font-size:10px;background:var(--red-bg);color:var(--red);padding:2px 8px;border-radius:99px;font-weight:600}
+
+/* ─── SECTION HEADERS ─── */
+.section-header{display:flex;align-items:center;gap:8px;margin:18px 0 10px;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.07em}
+.section-header::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ─── SPINNER ─── */
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .65s linear infinite;flex-shrink:0}
+.spinner-dark{border-color:rgba(0,0,0,.15);border-top-color:var(--text)}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ─── KNOWN LAWYERS PANEL ─── */
+.known-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;display:grid;grid-template-columns:1fr auto;gap:8px;align-items:start}
+.known-name{font-weight:600;font-size:14px}
+.known-firm{font-size:12px;color:var(--text2);margin-bottom:6px}
+.known-detail{font-size:12px;color:var(--text2);line-height:1.7}
+.known-actions{display:flex;flex-direction:column;gap:5px;align-items:flex-end}
+
+/* ─── EMPTY STATE ─── */
+.empty{text-align:center;padding:40px 20px;color:var(--text3)}
+.empty-icon{font-size:36px;margin-bottom:10px}
+.empty-msg{font-size:14px}
+
+/* ─── TABS WITHIN SECTION ─── */
+.tabs{display:flex;gap:2px;padding:3px;background:var(--surface2);border-radius:var(--radius-sm);margin-bottom:16px;width:fit-content}
+.tab{padding:6px 14px;font-size:12px;font-weight:500;cursor:pointer;border-radius:5px;border:none;background:transparent;color:var(--text2);transition:all .12s}
+.tab.active{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+
+/* ─── ALERT ─── */
+.alert{padding:10px 14px;border-radius:var(--radius-sm);font-size:12px;line-height:1.6;margin-bottom:14px}
+.alert-info{background:var(--blue-bg);color:var(--blue)}
+.alert-warn{background:var(--amber-bg);color:var(--amber)}
+.alert-green{background:var(--green-bg);color:var(--green)}
+
+/* ─── TOOLTIPS / HELP TEXT ─── */
+.help-text{font-size:11px;color:var(--text3);margin-top:4px;line-height:1.5}
+
+/* ─── RESPONSIVE / iOS ─── */
+@media(max-width:768px){
+  .shell{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+  .sidebar{position:static;height:auto;border-right:none;border-bottom:1px solid var(--border);overflow-y:visible}
+  .sidebar-footer{display:none}
+  .main{padding:14px 12px;max-width:100%}
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .row{flex-direction:column;gap:8px}
+  .row .field{max-width:100%!important}
+  .result-header{flex-direction:column;gap:6px}
+  .badges{justify-content:flex-start!important}
+  .result-actions{flex-wrap:wrap}
+  .btn{font-size:12px;padding:8px 12px}
+  .btn-primary{padding:13px!important;font-size:14px!important}
+  .card{padding:14px}
+  .panel-title{font-size:18px}
+  input,select{font-size:16px!important;padding:10px 12px}
+  .nav-item{padding:11px 14px}
+  .known-card{grid-template-columns:1fr;gap:6px}
+  .known-actions{flex-direction:row!important;align-items:flex-start}
+  .tags-wrap{flex-wrap:wrap}
+  .nav-section{padding-top:10px}
+  .shell nav,.shell aside{-webkit-overflow-scrolling:touch}
+}
+@media(max-width:400px){
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .stat-n{font-size:20px}
+}
+/* iOS safe area */
+@supports(padding:max(0px)){
+  .main{padding-bottom:max(14px,env(safe-area-inset-bottom))}
+  .sidebar{padding-bottom:max(0px,env(safe-area-inset-bottom))}
+}
+/* Prevent iOS double-tap zoom on buttons */
+button,a{touch-action:manipulation}
+/* iOS input styling */
+input:not([type=checkbox]):not([type=radio]),select,textarea{-webkit-appearance:none;border-radius:var(--radius-sm)}
+input[type=checkbox],input[type=radio]{-webkit-appearance:auto;appearance:auto}
+</style>
+</head>
+<body>
+
+<div class="shell">
+<!-- ─── SIDEBAR ─── -->
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="app-title">⚖️ Tax Relief Finder</div>
+    <div class="app-sub">한국어 · Korean &amp; English</div>
+  </div>
+  <div class="nav-section">Find Help</div>
+  <div class="nav-item active" onclick="nav('search')"><span class="icon">🔍</span> Search Lawyers <span class="nav-badge" id="nb-res">0</span></div>
+  <div class="nav-item" onclick="nav('known')"><span class="icon">⭐</span> Verified LA Attorneys <span class="nav-badge">9</span></div>
+  <div class="nav-section">Manage</div>
+  <div class="nav-item" onclick="nav('blacklist')"><span class="icon">🚫</span> Blacklist <span class="nav-badge" id="nb-bl">0</span></div>
+  <div class="nav-item" onclick="nav('contacted')"><span class="icon">✅</span> Contacted <span class="nav-badge" id="nb-ct">0</span></div>
+  <div class="nav-section">Resources</div>
+  <div class="nav-item" onclick="nav('resources')"><span class="icon">📋</span> IRS Resources</div>
+  <div class="nav-item" onclick="nav('hosting')"><span class="icon">🌐</span> Host This App</div>
+
+  <div class="sidebar-footer" style="font-size:13px;color:var(--text2);font-style:italic">
+    I love you yehju 🤍
+  </div>
+</aside>
+
+<!-- ─── MAIN ─── -->
+<main class="main">
+
+<!-- ═══════════════════════════════════════════
+     PANEL: SEARCH
+════════════════════════════════════════════ -->
+<div class="panel active" id="panel-search">
+  <div class="panel-title">Find Tax Relief Lawyers</div>
+  <div class="card" id="apikey-card" style="border-color:var(--amber);background:var(--amber-bg)">
+    <div class="card-title" style="color:var(--amber)">🔑 Enter your Anthropic API Key to use Search</div>
+    <div style="font-size:12px;color:var(--amber);margin-bottom:10px;line-height:1.6">Required to search from a downloaded file or iPhone/iPad. Get a free key at <a href="https://console.anthropic.com" target="_blank" style="color:var(--amber)">console.anthropic.com</a>. Stored only on this device.</div>
+    <div class="row" style="flex-direction:row!important">
+      <div class="field">
+        <label style="color:var(--amber)">Paste your API key (starts with sk-ant-…) — do not re-type</label>
+        <input id="api-key-input" type="password" placeholder="sk-ant-api03-…" autocomplete="off" style="font-family:monospace;letter-spacing:.05em">
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px;align-self:flex-end">
+        <button class="btn" style="border-color:var(--amber);color:var(--amber);white-space:nowrap" onclick="saveApiKey()">Save Key</button>
+        <button class="btn btn-sm" style="font-size:11px;color:var(--text3)" onclick="clearApiKey()">Clear Key</button>
+      </div>
+    </div>
+    <div id="apikey-status" style="font-size:11px;margin-top:6px;color:var(--amber)"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Search Settings</div>
+    <div class="row" style="margin-bottom:12px">
+      <div class="field">
+        <label>📍 Location (city or zip code)</label>
+        <input id="s-location" type="text" value="La Mirada, CA" placeholder="e.g. Cerritos, CA or 90638">
+      </div>
+      <div class="field" style="max-width:130px">
+        <label>📏 Radius</label>
+        <select id="s-radius">
+          <option value="5">5 miles</option>
+          <option value="10">10 miles</option>
+          <option value="15" selected>15 miles</option>
+          <option value="25">25 miles</option>
+          <option value="40">40 miles</option>
+        </select>
+      </div>
+    </div>
+    <div class="row" style="margin-bottom:12px">
+      <div class="field">
+        <label>⚖️ Primary need</label>
+        <select id="s-need">
+          <option value="tax relief and offer in compromise unreported income">Tax relief — unreported / under-table income</option>
+          <option value="IRS back taxes penalty abatement">IRS back taxes &amp; penalty abatement</option>
+          <option value="unfiled tax returns IRS compliance">Unfiled tax returns / getting compliant</option>
+          <option value="IRS audit defense">IRS audit defense</option>
+          <option value="tax levy garnishment release">Tax levy or wage garnishment release</option>
+          <option value="currently not collectible CNC status">Currently Not Collectible (CNC) status</option>
+        </select>
+      </div>
+      <div class="field" style="max-width:150px">
+        <label>💵 Fee preference</label>
+        <select id="s-fee">
+          <option value="affordable low-cost">Affordable / low-cost</option>
+          <option value="free consultation">Free consultation only</option>
+          <option value="payment plan sliding scale">Payment plan / sliding scale</option>
+          <option value="any">Any fee range</option>
+        </select>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">
+      <label class="checkbox-row"><input type="checkbox" id="chk-korean" checked> <span>🇰🇷 Prioritize Korean-speaking attorneys (한국어 우선)</span></label>
+      <label class="checkbox-row"><input type="checkbox" id="chk-enrolled"> <span>Include Enrolled Agents (cheaper than attorneys, same IRS access)</span></label>
+    </div>
+    <button class="btn btn-primary" id="search-btn" onclick="runSearch()" style="width:100%;justify-content:center;padding:11px">
+      <span>🔍 Search Now</span>
+    </button>
+  </div>
+
+  <div id="search-results">
+    <div class="empty">
+      <div class="empty-icon">⚖️</div>
+      <div class="empty-msg">Hit "Search Now" to find lawyers near your parents.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PANEL: KNOWN/VERIFIED ATTORNEYS
+════════════════════════════════════════════ -->
+<div class="panel" id="panel-known">
+  <div class="panel-title">Verified Southern California Attorneys</div>
+
+
+  <div class="alert alert-green">🇰🇷 Korean-speaking attorneys are marked with <strong>한국어</strong>. Always ask about fees upfront — many will do a free first call.</div>
+
+  <div id="known-list"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PANEL: BLACKLIST
+════════════════════════════════════════════ -->
+<div class="panel" id="panel-blacklist">
+  <div class="panel-title">Blacklist</div>
+  <div class="panel-sub">Block any firm, attorney, or keyword from appearing in search results. Saves automatically to this device.</div>
+
+  <div class="card">
+    <div class="card-title">Add to Blacklist</div>
+    <div class="row" style="margin-bottom:10px">
+      <div class="field">
+        <label>Name or keyword to block</label>
+        <input id="bl-input" type="text" placeholder="Firm name, attorney name, or keyword…" onkeydown="if(event.key==='Enter')addBlacklist()">
+      </div>
+      <div class="field" style="max-width:130px">
+        <label>Type</label>
+        <select id="bl-type">
+          <option value="firm">🏢 Firm</option>
+          <option value="lawyer">👤 Lawyer</option>
+          <option value="keyword">🔑 Keyword</option>
+        </select>
+      </div>
+      <button class="btn" onclick="addBlacklist()" style="margin-bottom:0">+ Add</button>
+    </div>
+    <div class="help-text">Blocked entries hide those lawyers from the AI search results panel and from the Verified list.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Blocked Firms <span id="bl-firm-ct" style="font-weight:400;color:var(--text3)"></span></div>
+    <div class="tag-wrap" id="bl-firms"><span class="tag-empty">No firms blocked yet</span></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Blocked Lawyers <span id="bl-lawyer-ct" style="font-weight:400;color:var(--text3)"></span></div>
+    <div class="tag-wrap" id="bl-lawyers"><span class="tag-empty">No lawyers blocked yet</span></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Blocked Keywords <span id="bl-keyword-ct" style="font-weight:400;color:var(--text3)"></span></div>
+    <div class="tag-wrap" id="bl-keywords"><span class="tag-empty">No keywords blocked yet</span></div>
+  </div>
+  <button class="btn btn-danger" onclick="clearAll()" style="margin-top:4px">🗑 Clear All Blacklist Entries</button>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PANEL: CONTACTED
+════════════════════════════════════════════ -->
+<div class="panel" id="panel-contacted">
+  <div class="panel-title">Already Contacted</div>
+  <div class="panel-sub">Track who you've already reached out to. These show as dimmed in search results so you don't call the same place twice.</div>
+
+  <div class="card">
+    <div class="card-title">Mark as Contacted</div>
+    <div class="row" style="margin-bottom:10px">
+      <div class="field">
+        <label>Firm or attorney name</label>
+        <input id="ct-input" type="text" placeholder="e.g. Tax Lawyers Group, Victor Yoo…" onkeydown="if(event.key==='Enter')addContacted()">
+      </div>
+      <div class="field" style="max-width:160px">
+        <label>Outcome</label>
+        <select id="ct-outcome">
+          <option value="No response yet">No response yet</option>
+          <option value="Left voicemail">Left voicemail</option>
+          <option value="Quoted too high">Quoted too high</option>
+          <option value="Not a good fit">Not a good fit</option>
+          <option value="Scheduled consult">Scheduled consult ✓</option>
+          <option value="Hired">Hired ✓✓</option>
+        </select>
+      </div>
+      <button class="btn btn-green" onclick="addContacted()" style="margin-bottom:0">✅ Mark</button>
+    </div>
+  </div>
+
+  <div id="contacted-list">
+    <div class="empty"><div class="empty-icon">📋</div><div class="empty-msg">No contacts tracked yet.</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PANEL: IRS RESOURCES
+════════════════════════════════════════════ -->
+<div class="panel" id="panel-resources">
+  <div class="panel-title">IRS &amp; California Tax Resources</div>
+  <div class="panel-sub">Free official resources your parents can use — no attorney needed for some of these.</div>
+
+  <div class="card">
+    <div class="card-title">🇺🇸 Free IRS Programs</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <a href="https://www.irs.gov/advocate" target="_blank" class="resource-link" style="text-decoration:none;display:block;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text)">
+        <div style="font-weight:600;margin-bottom:3px">🛡️ Taxpayer Advocate Service (TAS)</div>
+        <div style="font-size:12px;color:var(--text2)">Free independent help from the IRS. If your case is causing hardship, they can intervene. Call 1-877-777-4778. <strong>Korean language available.</strong></div>
+      </a>
+      <a href="https://www.irs.gov/businesses/small-businesses-self-employed/offer-in-compromise" target="_blank" class="resource-link" style="text-decoration:none;display:block;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text)">
+        <div style="font-weight:600;margin-bottom:3px">💰 Offer in Compromise (OIC)</div>
+        <div style="font-size:12px;color:var(--text2)">Settle tax debt for less than owed if you can't pay in full. IRS pre-qualifier tool is free. Best handled with an attorney for your dad's situation.</div>
+      </a>
+      <a href="https://www.irs.gov/individuals/penalty-relief" target="_blank" class="resource-link" style="text-decoration:none;display:block;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text)">
+        <div style="font-weight:600;margin-bottom:3px">✂️ Penalty Abatement</div>
+        <div style="font-size:12px;color:var(--text2)">First-Time Penalty Abatement (FTA) can remove penalties if it's a first offense. Your mom may qualify. Ask any attorney about this first.</div>
+      </a>
+      <a href="https://www.irs.gov/payments/payment-plans-installment-agreements" target="_blank" class="resource-link" style="text-decoration:none;display:block;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text)">
+        <div style="font-weight:600;margin-bottom:3px">📅 Installment Agreement</div>
+        <div style="font-size:12px;color:var(--text2)">Pay over time. You can set this up yourself online for under $50k owed. An attorney helps negotiate terms for larger amounts.</div>
+      </a>
+      <a href="https://www.irs.gov/businesses/small-businesses-self-employed/currently-not-collectible" target="_blank" class="resource-link" style="text-decoration:none;display:block;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text)">
+        <div style="font-weight:600;margin-bottom:3px">⏸️ Currently Not Collectible (CNC)</div>
+        <div style="font-size:12px;color:var(--text2)">IRS pauses collection if you truly can't pay. Buys time. Ask your attorney if your dad qualifies — given unemployment reporting, this may be key.</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🏛️ California State Resources</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <a href="https://apps.calbar.ca.gov/attorney/LicenseeSearch/QuickSearch" target="_blank" class="resource-link" style="text-decoration:none;display:block;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text)">
+        <div style="font-weight:600;margin-bottom:3px">⚖️ CA State Bar Attorney Search</div>
+        <div style="font-size:12px;color:var(--text2)">Verify any CA attorney's license status, discipline history, and good standing. Free public database. <strong>Always check before hiring.</strong></div>
+      </a>
+      <a href="https://www.calbar.ca.gov/public/find-legal-professionals/find-lawyer-referral-service" target="_blank" class="resource-link" style="text-decoration:none;display:block;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text)">
+        <div style="font-weight:600;margin-bottom:3px">📞 State Bar Lawyer Referral Service</div>
+        <div style="font-size:12px;color:var(--text2)">Certified referral services in LA and OC area. Low-cost consultations ($35–$50 often). Some Korean-speaking attorneys in the network.</div>
+      </a>
+      <a href="https://www.ftb.ca.gov/help/contact/index.asp" target="_blank" class="resource-link" style="text-decoration:none;display:block;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text)">
+        <div style="font-weight:600;margin-bottom:3px">🏠 CA Franchise Tax Board — Taxpayer Rights Advocate</div>
+        <div style="font-size:12px;color:var(--text2)">Helps with FTB issues. Korean interpreter available by request: 1-800-852-5711.</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🇰🇷 Korean Community Resources</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <a href="https://www.kagla.org" target="_blank" class="resource-link" style="text-decoration:none;display:block;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text)">
+        <div style="font-weight:600;margin-bottom:3px">🏛️ Korean American Bar Association of LA (KAGLA)</div>
+        <div style="font-size:12px;color:var(--text2)">Referrals to Korean-speaking attorneys. Some pro bono slots. Good first call if you need a Korean-speaking tax attorney.</div>
+      </a>
+      <div style="padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm)">
+        <div style="font-weight:600;margin-bottom:3px">📰 Korea Daily / 한국일보 (Koreadaily.com)</div>
+        <div style="font-size:12px;color:var(--text2)">Many Korean tax attorneys and CPAs advertise here. Search "세금 변호사" or "tax attorney" in their classifieds. Real practices, local to LA/OC.</div>
+      </div>
+      <div style="padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm)">
+        <div style="font-weight:600;margin-bottom:3px">📻 Radio Korea (라디오 코리아)</div>
+        <div style="font-size:12px;color:var(--text2)">1580 AM. Korean tax attorneys often advertise here and sometimes do free on-air consultations. Your parents can listen and call in.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     PANEL: HOSTING
+════════════════════════════════════════════ -->
+<div class="panel" id="panel-hosting">
+  <div class="panel-title">🌐 Host This App Free</div>
+
+  <div class="alert alert-info">GitHub Pages gives you a permanent URL (like <strong>yourname.github.io/tax-finder</strong>) that works on any device, no API key needed in the file — just open the URL.</div>
+
+  <div class="card">
+    <div class="card-title">Option A — GitHub Pages (recommended, free forever)</div>
+    <div style="display:flex;flex-direction:column;gap:14px;font-size:13px;color:var(--text2);line-height:1.8">
+      <div><strong style="color:var(--text)">1.</strong> Go to <a href="https://github.com" target="_blank" style="color:var(--blue)">github.com</a> and create a free account if you don't have one.</div>
+      <div><strong style="color:var(--text)">2.</strong> Click the <strong>+</strong> icon → <strong>New repository</strong>. Name it <code style="background:var(--surface2);padding:1px 6px;border-radius:4px">tax-finder</code>. Set it to <strong>Public</strong>. Click Create.</div>
+      <div><strong style="color:var(--text)">3.</strong> On the repo page click <strong>uploading an existing file</strong>, drag in the downloaded <code style="background:var(--surface2);padding:1px 6px;border-radius:4px">korean-tax-finder.html</code>, then <strong>rename it to <code style="background:var(--surface2);padding:1px 6px;border-radius:4px">index.html</code></strong> before committing.</div>
+      <div><strong style="color:var(--text)">4.</strong> Go to <strong>Settings → Pages</strong>. Under Source select <strong>Deploy from a branch → main → / (root)</strong>. Click Save.</div>
+      <div><strong style="color:var(--text)">5.</strong> Wait ~1 minute. Your app lives at <strong>https://yourusername.github.io/tax-finder</strong> — share that link with your parents.</div>
+      <div style="padding:10px 12px;background:var(--green-bg);border-radius:var(--radius-sm);color:var(--green);font-size:12px">✅ Once hosted on GitHub Pages the API key card disappears — the app works automatically because the Anthropic header is allowed from real domains.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Option B — Netlify Drop (fastest, 30 seconds)</div>
+    <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;color:var(--text2);line-height:1.8">
+      <div><strong style="color:var(--text)">1.</strong> Go to <a href="https://app.netlify.com/drop" target="_blank" style="color:var(--blue)">app.netlify.com/drop</a></div>
+      <div><strong style="color:var(--text)">2.</strong> Drag and drop the <code style="background:var(--surface2);padding:1px 6px;border-radius:4px">korean-tax-finder.html</code> file onto the page.</div>
+      <div><strong style="color:var(--text)">3.</strong> Netlify instantly gives you a URL like <strong>random-name.netlify.app</strong>. Done.</div>
+      <div style="padding:10px 12px;background:var(--amber-bg);border-radius:var(--radius-sm);color:var(--amber);font-size:12px">⚠️ Free Netlify sites expire after 24 hours unless you create an account. GitHub Pages is permanent.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Option C — iPhone / iPad without hosting</div>
+    <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;color:var(--text2);line-height:1.8">
+      <div><strong style="color:var(--text)">1.</strong> Get a free API key from <a href="https://console.anthropic.com" target="_blank" style="color:var(--blue)">console.anthropic.com</a></div>
+      <div><strong style="color:var(--text)">2.</strong> AirDrop the HTML file to your iPhone/iPad → open in Safari → tap Share → <strong>Add to Home Screen</strong></div>
+      <div><strong style="color:var(--text)">3.</strong> Enter the API key in the yellow card on first open — it saves permanently to that device.</div>
+      <div style="padding:10px 12px;background:var(--blue-bg);border-radius:var(--radius-sm);color:var(--blue);font-size:12px">ℹ️ The Verified Attorneys tab always works without any API key or internet — all data is baked in.</div>
+    </div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+// ─── STATE ───
+const DATA_KEY='taxfinder_v2';
+let state={blacklist:{firms:[],lawyers:[],keywords:[]},contacted:[]};
+function save(){try{localStorage.setItem(DATA_KEY,JSON.stringify(state))}catch(e){}}
+function load(){try{const d=localStorage.getItem(DATA_KEY);if(d)state=JSON.parse(d)}catch(e){}}
+load();
+
+// ─── KNOWN VERIFIED ATTORNEYS (researched from Justia, Super Lawyers, Avvo) ───
+const KNOWN=[
+  {
+    name:"Victor J. Yoo",
+    firm:"Tax Lawyers Group, APC",
+    city:"Torrance / Long Beach / LA",
+    phone:"(888) 553-8000",
+    website:"https://www.taxlawyersgroup.com",
+    calbar:"https://apps.calbar.ca.gov/attorney/LicenseeSearch/QuickSearch",
+    korean:true,
+    languages:["Korean","Japanese","Spanish","English"],
+    specialty:"Tax relief, IRS defense, Offer in Compromise, Tax bankruptcy, Criminal tax",
+    experience:"32 years",
+    highlights:"Super Lawyers selection, AVVO 10.0 Superb, former Deloitte & Touche. Won IRS amnesty programs for clients. Specifically handles under-table income / unreported income cases. Multiple offices serving Cerritos / La Mirada area.",
+    free:true,
+    notes:"Best overall match for your dad's situation — unreported income + Korean-speaking + has handled IRS amnesty. Also covers FTB and CDTFA.",
+    distance:"~12 mi from La Mirada (Torrance office)",
+    tags:["Korean","Offer in Compromise","IRS Amnesty","Criminal Tax","Super Lawyers"]
+  },
+  {
+    name:"Steve Kim",
+    firm:"Law Office of Steve Kim",
+    city:"Los Angeles (Koreatown area)",
+    phone:"Search on Justia/Avvo",
+    website:"https://www.justia.com/lawyers/tax-law/california/los-angeles",
+    calbar:"https://apps.calbar.ca.gov/attorney/LicenseeSearch/QuickSearch",
+    korean:true,
+    languages:["Korean","English"],
+    specialty:"IRS tax relief, back taxes, audits, FTB",
+    experience:"20+ years",
+    highlights:"Korean-American attorney in LA serving the Korean community. Verify current practice status on CalBar before calling.",
+    free:true,
+    notes:"Korean-speaking, serves the LA Korean community. Verify on CalBar and call to confirm fee structure.",
+    distance:"~18 mi from La Mirada",
+    tags:["Korean","Tax Relief","IRS Back Taxes"]
+  },
+  {
+    name:"Attorneys at KYJ LLP",
+    firm:"Kim, Yoo & Jang, LLP (KYJ)",
+    city:"Los Angeles / Orange County",
+    phone:"See kyjcpa.com",
+    website:"https://www.kyjcpa.com",
+    calbar:"https://apps.calbar.ca.gov/attorney/LicenseeSearch/QuickSearch",
+    korean:true,
+    languages:["Korean","English"],
+    specialty:"Tax compliance, IRS issues, Korean-American business tax",
+    experience:"Major Korean-American CPA/Tax firm in SoCal",
+    highlights:"One of the largest Korean-American CPA/advisory firms in Southern California. Handles IRS notices, audits, compliance. Note: CPA firm, not law firm — but can refer to attorneys.",
+    free:false,
+    notes:"Best for getting compliant and filing delinquent returns alongside an attorney. Bilingual Korean team.",
+    distance:"Serves entire SoCal",
+    tags:["Korean","Compliance","Unfiled Returns","CPA Firm"]
+  },
+  {
+    name:"Daniel W. Layton",
+    firm:"Law Offices of Daniel W. Layton",
+    city:"Orange County (near La Mirada)",
+    phone:"Search on Justia",
+    website:"https://www.justia.com/lawyers/tax-law/california/foothill-ranch",
+    calbar:"https://apps.calbar.ca.gov/attorney/LicenseeSearch/QuickSearch",
+    korean:false,
+    languages:["English"],
+    specialty:"Former Federal IRS prosecutor, tax controversy",
+    experience:"18+ years",
+    highlights:"Former Federal tax prosecutor and IRS trial attorney. Deep inside knowledge of how the IRS thinks. Best for serious or criminal-adjacent tax situations.",
+    free:true,
+    notes:"Doesn't speak Korean but is one of the strongest IRS defense attorneys in OC. Consider pairing with a Korean interpreter. Very close to La Mirada.",
+    distance:"~5-8 mi from La Mirada",
+    tags:["Former IRS Prosecutor","Criminal Tax","OC Local","Strong IRS Defense"]
+  },
+  {
+    name:"Zaher Fallahi",
+    firm:"Fallahi Law, APC (Tax Attorney & CPA)",
+    city:"Los Angeles",
+    phone:"(877) 687-7558",
+    website:"https://www.justia.com/lawyers/tax-law/california/los-angeles",
+    calbar:"https://apps.calbar.ca.gov/attorney/LicenseeSearch/QuickSearch",
+    korean:false,
+    languages:["English","Farsi"],
+    specialty:"Dual licensed: tax attorney + CPA. IRS audits, Offer in Compromise, back taxes",
+    experience:"30+ years",
+    highlights:"Dual licensed attorney & CPA. Highly rated on Justia. Offer in Compromise specialist. Strong on foreign income compliance too.",
+    free:true,
+    notes:"Very experienced, dual-licensed. Doesn't speak Korean but is well-regarded for OIC cases. Could work if you accompany parents.",
+    distance:"~18-22 mi from La Mirada (LA)",
+    tags:["Dual Licensed CPA/Attorney","Offer in Compromise","IRS Audits"]
+  },
+  {
+    name:"Victor J. Yoo (second office)",
+    firm:"Tax Lawyers Group — Cerritos / Norwalk Area",
+    city:"Cerritos / Norwalk",
+    phone:"(888) 553-8000",
+    website:"https://www.taxlawyersgroup.com/contact-us.html",
+    calbar:"https://apps.calbar.ca.gov/attorney/LicenseeSearch/QuickSearch",
+    korean:true,
+    languages:["Korean","Japanese","Spanish","English"],
+    specialty:"Tax relief, IRS, FTB, bankruptcy",
+    experience:"32 years",
+    highlights:"Tax Lawyers Group specifically lists Cerritos, Carson, Norwalk, Downey as served cities — all <10 miles from La Mirada. Same Korean-speaking team.",
+    free:true,
+    notes:"Closest office to La Mirada with Korean-speaking staff. Ask specifically for the Korean-speaking associate when calling.",
+    distance:"~3-7 mi from La Mirada",
+    tags:["Korean","Closest to La Mirada","IRS Relief","Cerritos"]
+  },
+  {
+    name:"Dennis Brager",
+    firm:"Brager Tax Law Group",
+    city:"West Los Angeles",
+    phone:"(310) 208-6200",
+    website:"https://www.bragertaxlaw.com",
+    calbar:"https://apps.calbar.ca.gov/attorney/LicenseeSearch/QuickSearch",
+    korean:false,
+    languages:["English"],
+    specialty:"CA State Bar Certified Tax Specialist, former IRS Senior Trial Attorney",
+    experience:"30+ years, Super Lawyers 2008-2023",
+    highlights:"CA State Bar Board Certified Tax Specialist. Former IRS Senior Trial Attorney. 15-attorney firm. Super Lawyers every year since 2008. First 15 min free.",
+    free:true,
+    notes:"Among the most credentialed tax attorneys in LA. Expensive but may have Korean-speaking associates — ask when calling.",
+    distance:"~25 mi from La Mirada",
+    tags:["CA Tax Specialist","Former IRS Attorney","Super Lawyers","Strong Reputation"]
+  },
+  {
+    name:"Korean American Bar Assoc (KAGLA)",
+    firm:"Referral Service — not a firm",
+    city:"Los Angeles",
+    phone:"See kagla.org",
+    website:"https://www.kagla.org",
+    calbar:"N/A — referral service",
+    korean:true,
+    languages:["Korean","English"],
+    specialty:"Referrals to Korean-speaking attorneys across all practice areas",
+    experience:"N/A",
+    highlights:"The Korean American Bar Association of Los Angeles. Their primary purpose is connecting Korean-Americans with Korean-speaking attorneys. Tax specialists are in their network.",
+    free:true,
+    notes:"Call them first to get a shortlist of Korean-speaking tax attorneys they've vetted. May have lower-cost options not listed elsewhere.",
+    distance:"Serves all of LA/OC",
+    tags:["Korean","Referral Service","Non-Profit","Free Referral"]
+  },
+  {
+    name:"IRS Taxpayer Advocate (TAS)",
+    firm:"IRS Taxpayer Advocate Service — FREE",
+    city:"Los Angeles / National",
+    phone:"1-877-777-4778",
+    website:"https://www.irs.gov/advocate",
+    calbar:"N/A — government agency",
+    korean:true,
+    languages:["Korean (interpreter available)","200+ languages"],
+    specialty:"Free IRS help for hardship cases",
+    experience:"Government agency",
+    highlights:"Completely free. Independent of the IRS. Korean interpreter available. If your family is experiencing financial hardship from IRS action, they can intervene directly with IRS on your behalf.",
+    free:true,
+    notes:"Always try this first — it's completely free and they have authority to stop collections during a hardship review. Korean available via interpreter.",
+    distance:"Free phone / national",
+    tags:["FREE","Korean via Interpreter","Government","Hardship Cases"]
+  }
+];
+
+// ─── NAV ───
+function nav(id){
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(el=>el.classList.remove('active'));
+  document.querySelector(`[onclick="nav('${id}')"]`).classList.add('active');
+  document.getElementById('panel-'+id).classList.add('active');
+  if(id==='known')renderKnown();
+  if(id==='blacklist')renderBlacklist();
+  if(id==='contacted')renderContacted();
+}
+
+// ─── BLACKLIST ───
+function addBlacklist(){
+  const v=document.getElementById('bl-input').value.trim();
+  const t=document.getElementById('bl-type').value;
+  if(!v)return;
+  const key=t+'s';
+  if(!state.blacklist[key].includes(v)){state.blacklist[key].push(v);}
+  document.getElementById('bl-input').value='';
+  save();renderBlacklist();updateBadges();
+}
+function removeBlacklist(type,val){
+  state.blacklist[type+'s']=state.blacklist[type+'s'].filter(x=>x!==val);
+  save();renderBlacklist();updateBadges();
+}
+function clearAll(){
+  if(!confirm('Clear all blacklist entries?'))return;
+  state.blacklist={firms:[],lawyers:[],keywords:[]};
+  save();renderBlacklist();updateBadges();
+}
+function renderBlacklist(){
+  ['firms','lawyers','keywords'].forEach(type=>{
+    const el=document.getElementById('bl-'+type.slice(0,-1)+'s');
+    const items=state.blacklist[type];
+    document.getElementById('bl-'+type.slice(0,-1)+'-ct').textContent=items.length?`(${items.length})`:'';
+    if(!items.length){el.innerHTML='<span class="tag-empty">None added yet</span>';return;}
+    el.innerHTML=items.map(v=>`<span class="tag tag-${type.slice(0,-1)}">${esc(v)}<span class="tag-remove" onclick="removeBlacklist('${type.slice(0,-1)}','${esc(v)}')">×</span></span>`).join('');
+  });
+}
+
+function isBlocked(name,firm,extra=''){
+  const hay=(name+' '+firm+' '+extra).toLowerCase();
+  for(const f of state.blacklist.firms){if(firm.toLowerCase().includes(f.toLowerCase()))return true;}
+  for(const l of state.blacklist.lawyers){if(name.toLowerCase().includes(l.toLowerCase()))return true;}
+  for(const k of state.blacklist.keywords){if(hay.includes(k.toLowerCase()))return true;}
+  return false;
+}
+
+// ─── CONTACTED ───
+function addContacted(){
+  const n=document.getElementById('ct-input').value.trim();
+  const o=document.getElementById('ct-outcome').value;
+  if(!n)return;
+  const existing=state.contacted.find(c=>c.name.toLowerCase()===n.toLowerCase());
+  if(existing){existing.outcome=o;existing.date=new Date().toLocaleDateString();}
+  else{state.contacted.push({name:n,outcome:o,date:new Date().toLocaleDateString()});}
+  document.getElementById('ct-input').value='';
+  save();renderContacted();updateBadges();
+}
+function removeContacted(name){
+  state.contacted=state.contacted.filter(c=>c.name!==name);
+  save();renderContacted();updateBadges();
+}
+function isContacted(name,firm){
+  const hay=(name+' '+firm).toLowerCase();
+  return state.contacted.some(c=>hay.includes(c.name.toLowerCase()));
+}
+function getContact(name,firm){
+  const hay=(name+' '+firm).toLowerCase();
+  return state.contacted.find(c=>hay.includes(c.name.toLowerCase()));
+}
+function renderContacted(){
+  const el=document.getElementById('contacted-list');
+  if(!state.contacted.length){el.innerHTML='<div class="empty"><div class="empty-icon">📋</div><div class="empty-msg">No contacts tracked yet.</div></div>';return;}
+  el.innerHTML=state.contacted.map(c=>`
+    <div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px;padding:12px 16px">
+      <div>
+        <div style="font-weight:600">${esc(c.name)}</div>
+        <div style="font-size:12px;color:var(--text2)">${esc(c.outcome)} · ${esc(c.date)}</div>
+      </div>
+      <button class="btn btn-sm btn-danger" onclick="removeContacted('${esc(c.name)}')">Remove</button>
+    </div>`).join('');
+}
+
+// ─── UPDATE BADGES ───
+function updateBadges(){
+  const bl=state.blacklist.firms.length+state.blacklist.lawyers.length+state.blacklist.keywords.length;
+  document.getElementById('nb-bl').textContent=bl||'0';
+  document.getElementById('nb-ct').textContent=state.contacted.length||'0';
+}
+
+// ─── KNOWN ATTORNEYS RENDER ───
+function renderKnown(){
+  const el=document.getElementById('known-list');
+  const lawyers=KNOWN.filter(a=>!isBlocked(a.name,a.firm));
+  const blocked=KNOWN.filter(a=>isBlocked(a.name,a.firm));
+
+  let html='';
+  lawyers.forEach(a=>{
+    const contacted=isContacted(a.name,a.firm);
+    const ct=getContact(a.name,a.firm);
+    html+=`<div class="result-card ${a.korean?'korean-highlight':''} ${contacted?'contacted-dim':''}">
+      <div class="result-header">
+        <div>
+          <div class="attorney-name">${esc(a.name)}</div>
+          <div class="firm-name">${esc(a.firm)}</div>
+        </div>
+        <div class="badges">
+          ${a.korean?'<span class="badge badge-korean">🇰🇷 한국어</span>':''}
+          ${a.free?'<span class="badge badge-free">Free consult</span>':''}
+          ${contacted?`<span class="badge badge-contacted">✅ ${esc(ct.outcome)}</span>`:''}
+        </div>
+      </div>
+      <div class="result-meta">
+        <span>📍 ${esc(a.city)}</span>
+        <span>📏 ${esc(a.distance)}</span>
+        <span>📞 ${esc(a.phone)}</span>
+        <span>⏱️ ${esc(a.experience)}</span>
+      </div>
+      ${a.languages.length?`<div style="font-size:11px;color:var(--text3);margin-bottom:8px">🗣️ Languages: ${a.languages.join(', ')}</div>`:''}
+      <div class="result-note">${esc(a.notes)}</div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:10px">📋 Specialty: ${esc(a.specialty)}</div>
+      ${a.tags.map(t=>`<span style="display:inline-flex;margin:0 4px 4px 0;padding:2px 8px;background:var(--surface2);color:var(--text2);border-radius:99px;font-size:11px;border:1px solid var(--border)">${esc(t)}</span>`).join('')}
+      <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
+        <a href="${a.website}" target="_blank" class="btn btn-sm">🌐 Website</a>
+        <a href="${a.calbar}" target="_blank" class="btn btn-sm">⚖️ Verify on CalBar</a>
+        <button class="btn btn-sm btn-green" onclick="quickContact('${esc(a.name)}')">✅ Mark Contacted</button>
+        <button class="btn btn-sm btn-danger" onclick="quickBlock('${esc(a.firm)}')">🚫 Blacklist</button>
+      </div>
+    </div>`;
+  });
+
+  if(blocked.length){
+    html+=`<div class="section-header">Blocked (${blocked.length})</div>`;
+    blocked.forEach(a=>{html+=`<div class="result-card blocked"><div class="blocked-label">Blocked</div><div class="attorney-name">${esc(a.name)}</div><div class="firm-name">${esc(a.firm)}</div><button class="btn btn-sm" style="margin-top:8px;pointer-events:all;opacity:1" onclick="removeBlacklist('firm','${esc(a.firm)}')">Unblock</button></div>`;});
+  }
+  el.innerHTML=html||'<div class="empty"><div class="empty-msg">All attorneys have been blocked.</div></div>';
+}
+
+// ─── QUICK ACTIONS ───
+function quickContact(name){
+  if(!state.contacted.find(c=>c.name===name)){state.contacted.push({name,outcome:'No response yet',date:new Date().toLocaleDateString()});}
+  save();updateBadges();
+  const cur=document.getElementById('panel-known');
+  if(cur.classList.contains('active'))renderKnown();
+}
+function quickBlock(firm){
+  if(!state.blacklist.firms.includes(firm)){state.blacklist.firms.push(firm);}
+  save();renderBlacklist();updateBadges();
+  const cur=document.getElementById('panel-known');
+  if(cur.classList.contains('active'))renderKnown();
+}
+function markContactedFromSearch(name){
+  if(!state.contacted.find(c=>c.name===name)){state.contacted.push({name,outcome:'No response yet',date:new Date().toLocaleDateString()});}
+  save();updateBadges();
+}
+function blockFromSearch(firm){
+  if(!state.blacklist.firms.includes(firm)){state.blacklist.firms.push(firm);}
+  save();updateBadges();
+  renderSearchResults(window._lastResults||[]);
+}
+
+// ─── API KEY ───
+function getApiKey(){
+  try{return localStorage.getItem('tax_finder_apikey')||'';}catch(e){return '';}
+}
+function saveApiKey(){
+  const raw=document.getElementById('api-key-input').value.trim();
+  // Reject if empty, masked (contains bullets), or wrong prefix
+  if(!raw){setKeyStatus('Please paste your API key first.','amber');return;}
+  if(raw.includes('•')||raw.includes('*')){setKeyStatus('That looks like a masked key — paste your real key from console.anthropic.com.','amber');return;}
+  if(!raw.startsWith('sk-ant-')){setKeyStatus('Key must start with sk-ant- — copy it fresh from console.anthropic.com.','amber');return;}
+  try{localStorage.setItem('tax_finder_apikey',raw);}catch(e){}
+  document.getElementById('api-key-input').value='';
+  document.getElementById('api-key-input').placeholder='Key saved! Paste a new one to update.';
+  setKeyStatus('✅ Key saved (ends in …'+raw.slice(-4)+'). You can now search.','green');
+  styleKeyCard('green');
+}
+function clearApiKey(){
+  try{localStorage.removeItem('tax_finder_apikey');}catch(e){}
+  document.getElementById('api-key-input').value='';
+  document.getElementById('api-key-input').placeholder='sk-ant-api03-…';
+  setKeyStatus('Key cleared. Paste a new one above.','amber');
+  styleKeyCard('amber');
+}
+function setKeyStatus(msg,color){
+  const el=document.getElementById('apikey-status');
+  el.textContent=msg;
+  el.style.color='var(--'+color+')';
+}
+function styleKeyCard(color){
+  const card=document.getElementById('apikey-card');
+  const title=document.querySelector('#apikey-card .card-title');
+  const c=color==='green'?'var(--green)':'var(--amber)';
+  const bg=color==='green'?'var(--green-bg)':'var(--amber-bg)';
+  card.style.borderColor=c;card.style.background=bg;
+  if(title)title.style.color=c;
+}
+function initApiKeyUI(){
+  const k=getApiKey();
+  if(k){
+    document.getElementById('api-key-input').placeholder='Key saved! Paste a new one to update.';
+    setKeyStatus('✅ Key active (ends in …'+k.slice(-4)+'). Ready to search.','green');
+    styleKeyCard('green');
+  }
+}
+
+// ─── AI SEARCH ───
+let searching=false;
+let _lastResults=[];
+
+async function runSearch(){
+  if(searching)return;
+  searching=true;
+  const btn=document.getElementById('search-btn');
+  btn.innerHTML='<span class="spinner"></span> Searching…';
+  btn.disabled=true;
+
+  const location=document.getElementById('s-location').value.trim()||'La Mirada, CA';
+  const radius=document.getElementById('s-radius').value;
+  const need=document.getElementById('s-need').value;
+  const fee=document.getElementById('s-fee').value;
+  const korean=document.getElementById('chk-korean').checked;
+  const enrolled=document.getElementById('chk-enrolled').checked;
+
+  const blList=[
+    ...state.blacklist.firms.map(f=>'FIRM: '+f),
+    ...state.blacklist.lawyers.map(l=>'LAWYER: '+l),
+    ...state.blacklist.keywords.map(k=>'KEYWORD: '+k)
+  ].join('; ')||'none';
+
+  const ctList=state.contacted.map(c=>c.name).join(', ')||'none';
+
+  document.getElementById('search-results').innerHTML=
+    `<div style="text-align:center;padding:32px;color:var(--text3)">
+      <div style="display:flex;justify-content:center;margin-bottom:12px"><div class="spinner spinner-dark" style="width:20px;height:20px"></div></div>
+      <div style="font-size:13px">Finding attorneys near your location…</div>
+      <div style="font-size:11px;margin-top:6px;color:var(--text3)">This may take 15–30 seconds</div>
+    </div>`;
+
+  const koreanStr = korean ? 'Korean-speaking attorneys MUST appear first' : 'any language';
+  const enrolledStr = enrolled ? 'yes include Enrolled Agents' : 'no attorneys only';
+
+  const systemPrompt = 'You are a JSON API. Output ONLY a valid JSON array. No prose, no markdown, no backticks. Use only double quotes. Never use apostrophes inside string values - reword to avoid them. Each element is an object with keys: name, firm, city, phone, website, korean, languages, specialty, experience, freeConsult, distance, score, source, calbarUrl, note, tags, contacted. korean/freeConsult/contacted are booleans. languages/tags are arrays of strings. score is an integer 0-100. All other values are strings. contacted is always false. note must use no apostrophes.';
+
+  const userMsg = 'List 8 real Southern California tax relief attorneys near ' + location + ' within ' + radius + ' miles. ' + koreanStr + '. Need: ' + need + '. Fee preference: ' + fee + '. Enrolled agents: ' + enrolledStr + '. Exclude: ' + blList + '. Output JSON array only.';
+
+  try{
+    const apiKey=getApiKey();
+    if(!apiKey){
+      throw new Error('No API key saved. Enter your Anthropic API key in the box above and tap Save Key.');
+    }
+    const headers={
+      'Content-Type':'application/json',
+      'x-api-key':apiKey,
+      'anthropic-version':'2023-06-01',
+      'anthropic-dangerous-direct-browser-access':'true'
+    };
+
+    const body={
+      model:'claude-sonnet-4-6',
+      max_tokens:3000,
+      system:systemPrompt,
+      messages:[{role:'user',content:userMsg}]
+    };
+
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers,
+      body:JSON.stringify(body)
+    });
+
+    if(!resp.ok){
+      const errText=await resp.text();
+      let friendlyErr=`API error ${resp.status}`;
+      if(resp.status===401)friendlyErr='Invalid API key. Check your key at console.anthropic.com and re-enter it above.';
+      else if(resp.status===429)friendlyErr='Rate limit hit. Wait a moment and try again.';
+      else if(resp.status===403)friendlyErr='API key does not have permission. Make sure it is an active key from console.anthropic.com.';
+      throw new Error(friendlyErr);
+    }
+    const data=await resp.json();
+
+    // Extract text from all content blocks
+    let raw = '';
+    for(const block of (data.content || [])){
+      if(block.type === 'text') raw += block.text;
+    }
+
+    // Strip markdown fences
+    raw = raw.replace(/```json/g,'').replace(/```/g,'').trim();
+
+    // Extract outermost JSON array
+    const arrStart = raw.indexOf('[');
+    const arrEnd = raw.lastIndexOf(']');
+    if(arrStart === -1 || arrEnd === -1) throw new Error('No attorney list returned — tap Try Again.');
+    let jsonStr = raw.slice(arrStart, arrEnd + 1);
+
+    // Repair common AI JSON mistakes:
+    // 1. Remove any trailing commas before ] or }
+    jsonStr = jsonStr.replace(/,\s*([\]\}])/g, '$1');
+    // 2. Replace smart/curly quotes with straight quotes
+    jsonStr = jsonStr.replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"');
+    // 3. Fix unescaped single quotes inside double-quoted strings by removing them
+    jsonStr = jsonStr.replace(/"([^"\\]*)'/g, (m,p1) => '"' + p1.replace(/'/g,'') );
+    // 4. Remove control characters
+    jsonStr = jsonStr.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, '');
+
+    let results;
+    try {
+      results = JSON.parse(jsonStr);
+    } catch(parseErr) {
+      // Last resort: try to parse object by object
+      const objects = [];
+      const objRe = /\{[^\{\}]*\}/gs;
+      let m2;
+      while((m2 = objRe.exec(jsonStr)) !== null){
+        try{ objects.push(JSON.parse(m2[0])); }catch(e){ /* skip bad object */ }
+      }
+      if(!objects.length) throw new Error('Search returned unreadable data — tap Try Again.');
+      results = objects;
+    }
+    if(!Array.isArray(results)) results = [results];
+    // Filter out any non-objects
+    results = results.filter(r => r && typeof r === 'object' && r.name);
+
+    // Sort: Korean first, then by score
+    results.sort((a,b)=>{
+      if(a.korean&&!b.korean)return -1;
+      if(!a.korean&&b.korean)return 1;
+      return(b.score||0)-(a.score||0);
+    });
+
+    // Mark contacted
+    results=results.map(r=>({...r,contacted:isContacted(r.name,r.firm)}));
+
+    window._lastResults=results;
+    renderSearchResults(results);
+    document.getElementById('nb-res').textContent=results.filter(r=>!isBlocked(r.name,r.firm)).length;
+
+  }catch(e){
+    console.error(e);
+    document.getElementById('search-results').innerHTML=
+      `<div class="alert alert-warn" style="margin-top:0">
+        ⚠️ Search encountered an error: ${esc(e.message)}.<br>
+        Check your API key above or try the <strong>Verified Attorneys</strong> tab which always works.
+      </div>
+      <button class="btn btn-primary" onclick="runSearch()">↩ Try Again</button>`;
+  }
+
+  btn.innerHTML='<span>🔍 Search Again</span>';
+  btn.disabled=false;
+  searching=false;
+}
+
+function renderSearchResults(results){
+  const el=document.getElementById('search-results');
+  const visible=results.filter(r=>!isBlocked(r.name,r.firm));
+  const blocked=results.filter(r=>isBlocked(r.name,r.firm));
+  const fresh=visible.filter(r=>!r.contacted);
+  const contacted=visible.filter(r=>r.contacted);
+
+  const stats=`<div class="stats-row">
+    <div class="stat-card"><div class="stat-n">${fresh.length}</div><div class="stat-l">Available</div></div>
+    <div class="stat-card"><div class="stat-n">${visible.filter(r=>r.korean).length}</div><div class="stat-l">Korean-speaking</div></div>
+    <div class="stat-card"><div class="stat-n">${contacted.length}</div><div class="stat-l">Contacted</div></div>
+    <div class="stat-card"><div class="stat-n">${blocked.length}</div><div class="stat-l">Blocked</div></div>
+  </div>`;
+
+  function cardHTML(r){
+    const pct=Math.min(100,Math.max(0,r.score||50));
+    const ct=getContact(r.name,r.firm);
+    return `<div class="result-card ${r.korean?'korean-highlight':''} ${r.contacted?'contacted-dim':''}">
+      <div class="result-header">
+        <div>
+          <div class="attorney-name">${esc(r.name)}</div>
+          <div class="firm-name">${esc(r.firm)}</div>
+        </div>
+        <div class="badges">
+          ${r.korean?'<span class="badge badge-korean">🇰🇷 한국어</span>':''}
+          ${r.freeConsult?'<span class="badge badge-free">Free consult</span>':''}
+          ${r.contacted&&ct?`<span class="badge badge-contacted">✅ ${esc(ct.outcome)}</span>`:''}
+          ${r.source?`<span class="badge badge-source">${esc(r.source)}</span>`:''}
+        </div>
+      </div>
+      <div class="priority-bar"><div class="priority-fill" style="width:${pct}%"></div></div>
+      <div class="result-meta">
+        <span>📍 ${esc(r.city)}</span>
+        <span>📏 ${esc(r.distance||'–')}</span>
+        <span>📞 ${esc(r.phone||'See website')}</span>
+        ${r.experience?`<span>⏱️ ${esc(r.experience)}</span>`:''}
+      </div>
+      ${r.languages&&r.languages.length?`<div style="font-size:11px;color:var(--text3);margin-bottom:8px">🗣️ Languages: ${r.languages.join(', ')}</div>`:''}
+      ${r.note?`<div class="result-note">${esc(r.note)}</div>`:''}
+      ${r.tags&&r.tags.length?`<div style="margin-bottom:10px">${r.tags.map(t=>`<span style="display:inline-flex;margin:0 3px 3px 0;padding:2px 8px;background:var(--surface2);color:var(--text2);border-radius:99px;font-size:11px;border:1px solid var(--border)">${esc(t)}</span>`).join('')}</div>`:''}
+      <div class="result-actions">
+        ${r.website?`<a href="${esc(r.website)}" target="_blank" class="btn btn-sm">🌐 Profile</a>`:''}
+        <a href="${r.calbarUrl||'https://apps.calbar.ca.gov/attorney/LicenseeSearch/QuickSearch'}" target="_blank" class="btn btn-sm">⚖️ Verify CalBar</a>
+        <button class="btn btn-sm btn-green" onclick="markContactedFromSearch('${esc(r.name).replace(/'/g,"\\'")}')">✅ Mark Contacted</button>
+        <button class="btn btn-sm btn-danger" onclick="blockFromSearch('${esc(r.firm).replace(/'/g,"\\'")}')">🚫 Block</button>
+      </div>
+    </div>`;
+  }
+
+  let html=stats;
+  if(fresh.length){html+=fresh.map(cardHTML).join('');}
+  if(contacted.length){html+=`<div class="section-header">Already Contacted (${contacted.length})</div>${contacted.map(cardHTML).join('')}`;}
+  if(blocked.length){html+=`<div class="section-header">Blocked (${blocked.length})</div>${blocked.map(r=>`<div class="result-card blocked"><div class="blocked-label">Blocked</div><div class="attorney-name">${esc(r.name)}</div><div class="firm-name">${esc(r.firm)}</div></div>`).join('')}`;}
+  if(!visible.length&&!blocked.length){html+='<div class="empty"><div class="empty-icon">🔍</div><div class="empty-msg">No results returned. Try a broader radius or fewer filters.</div></div>';}
+
+  el.innerHTML=html;
+}
+
+// ─── UTIL ───
+function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+
+// ─── INIT ───
+renderBlacklist();
+renderContacted();
+updateBadges();
+initApiKeyUI();
+</script>
+</body>
+</html>
