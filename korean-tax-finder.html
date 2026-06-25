@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>세금 구제 변호사 찾기 · Korean Tax Relief Finder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f7f6f3;
+  --surface:#ffffff;
+  --surface2:#f0efe9;
+  --border:#e2e1da;
+  --border2:#cccac0;
+  --text:#1a1917;
+  --text2:#6b6960;
+  --text3:#9b9990;
+  --green:#1a7f5a;
+  --green-bg:#e8f7ef;
+  --blue:#185ea5;
+  --blue-bg:#e6f0fb;
+  --amber:#8a5c00;
+  --amber-bg:#fdf3db;
+  --red:#9b2626;
+  --red-bg:#fdeaea;
+  --radius:10px;
+  --radius-sm:6px;
+}
+body{font-family:'Inter',sans-serif;font-size:14px;color:var(--text);background:var(--bg);min-height:100vh}
+
+/* ─── LAYOUT ─── */
+.shell{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.main{overflow-y:auto;padding:28px 32px;max-width:860px}
+
+/* ─── SIDEBAR ─── */
+.sidebar-header{padding:20px 18px 14px;border-bottom:1px solid var(--border)}
+.app-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:2px}
+.app-sub{font-size:11px;color:var(--text3)}
+.nav-section{padding:14px 12px 6px;font-size:10px;font-weight:600;color:var(--text3);letter-spacing:.08em;text-transform:uppercase}
+.nav-item{display:flex;align-items:center;gap:8px;padding:8px 14px;margin:1px 6px;border-radius:var(--radius-sm);cursor:pointer;font-size:13px;color:var(--text2);transition:background .12s}
+.nav-item:hover{background:var(--surface2)}
+.nav-item.active{background:var(--text);color:#fff}
+.nav-item .icon{font-size:15px;width:18px;text-align:center;flex-shrink:0}
+.nav-badge{margin-left:auto;background:rgba(255,255,255,.2);font-size:10px;padding:1px 6px;border-radius:99px;font-weight:500}
+.nav-item:not(.active) .nav-badge{background:var(--surface2);color:var(--text2)}
+.sidebar-footer{margin-top:auto;padding:14px 16px;border-top:1px solid var(--border);font-size:11px;color:var(--text3);line-height:1.7}
+
+/* ─── PANELS ─── */
+.panel{display:none}.panel.active{display:block}
+.panel-title{font-size:20px;font-weight:600;margin-bottom:4px}
+.panel-sub{font-size:13px;color:var(--text2);margin-bottom:22px;line-height:1.6}
+
+/* ─── CARDS ─── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;margin-bottom:14px}
+.card-title{font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px}
+
+/* ─── FORM ─── */
+.field{display:flex;flex-direction:column;gap:5px;flex:1}
+.field label{font-size:12px;font-weight:500;color:var(--text2)}
+input,select,textarea{font-family:inherit;font-size:13px;padding:8px 11px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);outline:none;width:100%;transition:border-color .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--text)}
+.row{display:flex;gap:10px;align-items:flex-end}
+.checkbox-row{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);cursor:pointer;padding:2px 0}
+.checkbox-row input[type=checkbox]{width:16px;height:16px;cursor:pointer;flex-shrink:0;accent-color:var(--text)}
+
+/* ─── BUTTONS ─── */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;font-size:13px;font-family:inherit;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface);color:var(--text);cursor:pointer;white-space:nowrap;font-weight:500;transition:all .12s}
+.btn:hover{background:var(--surface2)}
+.btn-primary{background:var(--text);color:#fff;border-color:var(--text)}
+.btn-primary:hover{opacity:.88}
+.btn-sm{padding:5px 11px;font-size:12px}
+.btn-danger{color:var(--red);border-color:var(--red)}
+.btn-danger:hover{background:var(--red-bg)}
+.btn-green{color:var(--green);border-color:var(--green)}
+.btn-green:hover{background:var(--green-bg)}
+.btn:disabled{opacity:.5;pointer-events:none}
+
+/* ─── TAGS ─── */
+.tag-wrap{display:flex;flex-wrap:wrap;gap:6px;min-height:36px;padding:8px;border:1px dashed var(--border2);border-radius:var(--radius-sm);background:var(--surface2)}
+.tag{display:inline-flex;align-items:center;gap:5px;padding:3px 9px 3px 10px;border-radius:99px;font-size:12px;font-weight:500;border:1px solid transparent}
+.tag-firm{background:var(--red-bg);color:var(--red);border-color:#f5c0c0}
+.tag-lawyer{background:var(--amber-bg);color:var(--amber);border-color:#f5d98c}
+.tag-keyword{background:var(--blue-bg);color:var(--blue);border-color:#b0d0f7}
+.tag-contacted{background:var(--green-bg);color:var(--green);border-color:#a0e0c0}
+.tag-remove{cursor:pointer;opacity:.55;font-size:14px;line-height:1;padding:0 1px;font-weight:700}
+.tag-remove:hover{opacity:1}
+.tag-empty{font-size:12px;color:var(--text3);align-self:center;margin:auto}
+
+/* ─── BADGES ─── */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:600}
+.badge-korean{background:var(--green-bg);color:var(--green)}
+.badge-contacted{background:var(--amber-bg);color:var(--amber)}
+.badge-blocked{background:var(--red-bg);color:var(--red)}
+.badge-free{background:var(--blue-bg);color:var(--blue)}
+.badge-source{background:var(--surface2);color:var(--text3);font-weight:500}
+
+/* ─── STATS ROW ─── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;text-align:center}
+.stat-n{font-size:24px;font-weight:600;color:var(--text)}
+.stat-l{font-size:11px;color:var(--text3);margin-top:2px}
+
+/* ─── RESULT CARDS ─── */
+.result-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:10px;transition:all .15s;position:relative}
+.result-card.korean-highlight{border-left:3px solid var(--green)}
+.result-card.blocked{opacity:.3;pointer-events:none}
+.result-card.contacted-dim{opacity:.6}
+.result-header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:8px}
+.attorney-name{font-size:15px;font-weight:600;color:var(--text);margin-bottom:2px}
+.firm-name{font-size:12px;color:var(--text2)}
+.badges{display:flex;flex-wrap:wrap;gap:4px;flex-shrink:0;justify-content:flex-end}
+.result-meta{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--text2);margin-bottom:10px}
+.result-meta span{display:flex;align-items:center;gap:4px}
+.result-note{font-size:12px;color:var(--text2);line-height:1.6;padding:8px 10px;background:var(--surface2);border-radius:var(--radius-sm);margin-bottom:10px}
+.result-actions{display:flex;gap:6px;flex-wrap:wrap}
+.priority-bar{height:2px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:10px}
+.priority-fill{height:100%;border-radius:2px;background:var(--green);transition:width .4s ease}
+.blocked-label{position:absolute;top:10px;right:10px;font-size:10px;background:var(--red-bg);color:var(--red);padding:2px 8px;border-radius:99px;font-weight:600}
+
+/* ─── SECTION HEADERS ─── */
+.section-header{display:flex;align-items:center;gap:8px;margin:18px 0 10px;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.07em}
+.section-header::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ─── SPINNER ─── */
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .65s linear infinite;flex-shrink:0}
+.spinner-dark{border-color:rgba(0,0,0,.15);border-top-color:var(--text)}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ─── KNOWN LAWYERS PANEL ─── */
+.known-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;display:grid;grid-template-columns:1fr auto;gap:8px;align-items:start}
+.known-name{font-weight:600;font-size:14px}
+.known-firm{font-size:12px;color:var(--text2);margin-bottom:6px}
+.known-detail{font-size:12px;color:var(--text2);line-height:1.7}
+.known-actions{display:flex;flex-direction:column;gap:5px;align-items:flex-end}
+
+/* ─── EMPTY STATE ─── */
+.empty{text-align:center;padding:40px 20px;color:var(--text3)}
+.empty-icon{font-size:36px;margin-bottom:10px}
+.empty-msg{font-size:14px}
+
+/* ─── TABS WITHIN SECTION ─── */
+.tabs{display:flex;gap:2px;padding:3px;background:var(--surface2);border-radius:var(--radius-sm);margin-bottom:16px;width:fit-content}
+.tab{padding:6px 14px;font-size:12px;font-weight:500;cursor:pointer;border-radius:5px;border:none;background:transparent;color:var(--text2);transition:all .12s}
+.tab.active{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+
+/* ─── ALERT ─── */
+.alert{padding:10px 14px;border-radius:var(--radius-sm);font-size:12px;line-height:1.6;margin-bottom:14px}
+.alert-info{background:var(--blue-bg);color:var(--blue)}
+.alert-warn{background:var(--amber-bg);color:var(--amber)}
+.alert-green{background:var(--green-bg);color:var(--green)}
+
+/* ─── TOOLTIPS / HELP TEXT ─── */
+.help-text{font-size:11px;color:var(--text3);margin-top:4px;line-height:1.5}
+
+.search-tag{padding:5px 12px;border-radius:99px;border:1px solid var(--border2);background:var(--surface);color:var(--text2);font-size:12px;cursor:pointer;font-family:inherit;transition:all .12s;white-space:nowrap}
+.search-tag:hover,.search-tag.active{background:var(--text);color:#fff;border-color:var(--text)}
+/* ─── RESPONSIVE / iOS ─── */
+@media(max-width:768px){
+  .shell{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+  .sidebar{position:static;height:auto;border-right:none;border-bottom:1px solid var(--border);overflow-y:visible}
+  .sidebar-footer{display:none}
+  .main{padding:14px 12px;max-width:100%}
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .row{flex-direction:column;gap:8px}
+  .row .field{max-width:100%!important}
+  .result-header{flex-direction:column;gap:6px}
+  .badges{justify-content:flex-start!important}
+  .result-actions{flex-wrap:wrap}
+  .btn{font-size:12px;padding:8px 12px}
+  .btn-primary{padding:13px!important;font-size:14px!important}
+  .card{padding:14px}
+  .panel-title{font-size:18px}
+  input,select{font-size:16px!important;padding:10px 12px}
+  .nav-item{padding:11px 14px}
+  .known-card{grid-template-columns:1fr;gap:6px}
+  .known-actions{flex-direction:row!important;align-items:flex-start}
+  .tags-wrap{flex-wrap:wrap}
+  .nav-section{padding-top:10px}
+  .shell nav,.shell aside{-webkit-overflow-scrolling:touch}
+}
+@media(max-width:400px){
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .stat-n{font-size:20px}
+}
+/* iOS safe area */
+@supports(padding:max(0px)){
+  .main{padding-bottom:max(14px,env(safe-area-inset-bottom))}
+  .sidebar{padding-bottom:max(0px,env(safe-area-inset-bottom))}
+}
+/* Prevent iOS double-tap zoom on buttons */
+button,a{touch-action:manipulation}
+/* iOS input styling */
+input:not([type=checkbox]):not([type=radio]),select,textarea{-webkit-appearance:none;border-radius:var(--radius-sm)}
+input[type=checkbox],input[type=radio]{-webkit-appearance:auto;appearance:auto}
+</style>
+</head>
+<body>
+
+<div class="shell">
+<!-- ─── SIDEBAR ─── -->
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="app-title">⚖️ Tax Relief Finder</div>
+    <div class="app-sub">한국어 · Korean &amp; English</div>
+  </div>
+  <div class="nav-section">Find Help</div>
+  <div class="nav-item active" onclick="nav('search')"><span class="icon">📋</span> All Attorneys <span class="nav-badge" id="nb-res">0</span></div>
+  <div class="nav-item" onclick="nav('known')"><span class="icon">⭐</span> Verified LA Attorneys <span class="nav-badge" id="nb-known">12</span></div>
+  <div class="nav-section">Resources</div>
+  <div class="nav-item" onclick="nav('resources')"><span class="icon">📋</span> IRS Resources</div>
+
+  <div class="sidebar-footer" style="font-size:13px;color:var(--text2);font-style:italic">
+    I love you yehju 🤍
+  </div>
+</aside>
+
+<!-- ─── MAIN ─── -->
+<main class="main">
+
+<!-- ═══════════════════════════════════════════
+     PANEL: ATTORNEYS LIST
+════════════════════════════════════════════ -->
+<div class="panel active" id="panel-search">
+  <div class="panel-title">All Attorneys</div>
+  <div id="search-results-area"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PANEL: KNOWN/VERIFIED ATTORNEYS
+════════════════════════════════════════════ -->
+<div class="panel" id="panel-known">
+  <div class="panel-title">Verified Southern California Attorneys</div>
+
+
+  <div class="alert alert-green">🇰🇷 Korean-speaking attorneys are marked with <strong>한국어</strong>. Always ask about fees upfront — many will do a free first call.</div>
+
+  <div id="known-list"></div>
+</div>
+
+</div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PANEL: IRS RESOURCES
+════════════════════════════════════════════ -->
+<div class="panel" id="panel-resources">
+  <div class="panel-title">IRS &amp; California Tax Resources</div>
+  <div class="panel-sub">Free official resources your parents can use — no attorney needed for some of these.</div>
+
+  <div class="card">
+    <div class="card-title">🇺🇸 Free IRS Programs</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <a href="https://www.irs.gov/advocate" target="_blank" class="resource-link" style="text-decoration:none;display:block;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text)">
+        <div style="font-weight:600;margin-bottom:3px">🛡️ Taxpayer Advocate Service (TAS)</div>
+        <div style="font-size:12px;color:var(--text2)">Free independent help from the IRS. If your case is causing hardship, they can intervene. Call 1-877-777-4778. <strong>Korean language available.</strong></div>
+      </a>
+      <a href="https://www.irs.gov/businesses/small-businesses-self-employed/offer-in-compromise" target="_blank" class="resource-link" style="text-decoration:none;display:block;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text)">
+        <div style="font-weight:600;margin-bottom:3px">💰 Offer in Compromise (OIC)</div>
+        <div style="font-size:12px;color:var(--text2)">Settle tax debt for less than owed if you can't pay in full. IRS pre-qualifier tool is free. Best handled with an attorney for your dad's situation.</div>
+      </a>
+      <a href="https://www.irs.gov/individuals/penalty-relief" target="_blank" class="resource-link" style="text-decoration:none;display:block;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text)">
+        <div style="font-weight:600;margin-bottom:3px">✂️ Penalty Abatement</div>
+        <div style="font-size:12px;color:var(--text2)">First-Time Penalty Abatement (FTA) can remove penalties if it's a first offense. Your mom may qualify. Ask any attorney about this first.</div>
+      </a>
+      <a href="https://www.irs.gov/payments/payment-plans-installment-agreements" target="_blank" class="resource-link" style="text-decoration:none;display:block;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text)">
+        <div style="font-weight:600;margin-bottom:3px">📅 Installment Agreement</div>
+        <div style="font-size:12px;color:var(--text2)">Pay over time. You can set this up yourself online for under $50k owed. An attorney helps negotiate terms for larger amounts.</div>
+      </a>
+      <a href="https://www.irs.gov/businesses/small-businesses-self-employed/currently-not-collectible" target="_blank" class="resource-link" style="text-decoration:none;display:block;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text)">
+        <div style="font-weight:600;margin-bottom:3px">⏸️ Currently Not Collectible (CNC)</div>
+        <div style="font-size:12px;color:var(--text2)">IRS pauses collection if you truly can't pay. Buys time. Ask your attorney if your dad qualifies — given unemployment reporting, this may be key.</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🏛️ California State Resources</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <a href="https://apps.calbar.ca.gov/attorney/LicenseeSearch/QuickSearch" target="_blank" class="resource-link" style="text-decoration:none;display:block;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text)">
+        <div style="font-weight:600;margin-bottom:3px">⚖️ CA State Bar Attorney Search</div>
+        <div style="font-size:12px;color:var(--text2)">Verify any CA attorney's license status, discipline history, and good standing. Free public database. <strong>Always check before hiring.</strong></div>
+      </a>
+      <a href="https://www.calbar.ca.gov/public/find-legal-professionals/find-lawyer-referral-service" target="_blank" class="resource-link" style="text-decoration:none;display:block;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text)">
+        <div style="font-weight:600;margin-bottom:3px">📞 State Bar Lawyer Referral Service</div>
+        <div style="font-size:12px;color:var(--text2)">Certified referral services in LA and OC area. Low-cost consultations ($35–$50 often). Some Korean-speaking attorneys in the network.</div>
+      </a>
+      <a href="https://www.ftb.ca.gov/help/contact/index.asp" target="_blank" class="resource-link" style="text-decoration:none;display:block;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text)">
+        <div style="font-weight:600;margin-bottom:3px">🏠 CA Franchise Tax Board — Taxpayer Rights Advocate</div>
+        <div style="font-size:12px;color:var(--text2)">Helps with FTB issues. Korean interpreter available by request: 1-800-852-5711.</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🇰🇷 Korean Community Resources</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <a href="https://www.kabasocal.org" target="_blank" class="resource-link" style="text-decoration:none;display:block;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text)">
+        <div style="font-weight:600;margin-bottom:3px">🏛️ KABA-SoCal — Korean American Bar Association of SoCal</div>
+        <div style="font-size:12px;color:var(--text2)">Real nonprofit — 1110 N. Virgil Ave, PMB 93648, Los Angeles, CA 90029. Monthly pro-bono legal clinics. Korean-speaking attorneys network. Contact via kabasocal.org.</div>
+      </a>
+      <div style="padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm)">
+        <div style="font-weight:600;margin-bottom:3px">📰 Korea Daily / 한국일보 (Koreadaily.com)</div>
+        <div style="font-size:12px;color:var(--text2)">Many Korean tax attorneys and CPAs advertise here. Search "세금 변호사" or "tax attorney" in their classifieds. Real practices, local to LA/OC.</div>
+      </div>
+      <div style="padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm)">
+        <div style="font-weight:600;margin-bottom:3px">📻 Radio Korea (라디오 코리아)</div>
+        <div style="font-size:12px;color:var(--text2)">1580 AM. Korean tax attorneys often advertise here and sometimes do free on-air consultations. Your parents can listen and call in.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+</main>
+</div>
+
+<script>
+// ── STATE ──────────────────────────────────────────────────────
+const DATA_KEY = 'taxfinder_v3';
+let state = { blacklist: { firms: [], lawyers: [], keywords: [] }, contacted: [] };
+function save() { try { localStorage.setItem(DATA_KEY, JSON.stringify(state)); } catch(e) {} }
+function load() { try { const d = localStorage.getItem(DATA_KEY); if (d) state = JSON.parse(d); } catch(e) {} }
+load();
+
+// ── VERIFIED ATTORNEY DATABASE ─────────────────────────────────
+// All attorneys verified via CalBar, Avvo, Justia, and firm websites.
+// Do not add any attorney without a verified CalBar license number or confirmed website.
+const DB = [
+  {
+    name: "KYCC Low Income Tax Clinic (LITC)",
+    firm: "Koreatown Youth + Community Center — COMPLETELY FREE",
+    city: "Los Angeles (Koreatown)",
+    address: "3727 W. 6th Street, Suite 410, Los Angeles, CA 90020",
+    phone: "(213) 232-2700",
+    website: "https://www.kyccla.org/kycc-low-income-tax-clinic-schedule-a-free-consultation/",
+    avvo: "https://www.kyccla.org",
+    calbar: "N/A — IRS-funded federal program",
+    korean: true,
+    languages: ["Korean", "English"],
+    specialty: "Free IRS representation — audits, appeals, collections, OIC, innocent spouse — for low-income taxpayers who cannot afford an attorney",
+    experience: "IRS-funded LITC program — KYCC org established 1975 serving Korean community",
+    rating: "IRS-funded federal program — verified",
+    freeConsult: true,
+    distance: "~20 miles from Buena Park",
+    note: "100% FREE IRS representation for low-income Korean-speaking taxpayers. Handles audits, collections, OIC, innocent spouse. Intake is active — call (213) 232-2700 or email litc@kyccla.org. Must qualify: income under 250% of federal poverty guidelines. Volunteer attorneys may mean a waitlist — apply early.",
+    tags: ["⭐ Check Here First", "Korean", "FREE", "Low Income", "IRS Funded", "LITC", "Audits", "OIC", "Innocent Spouse", "Koreatown"]
+  },
+  {
+    name: "Victor J. Yoo",
+    firm: "Tax Lawyers Group, APC",
+    city: "Long Beach",
+    address: "400 Oceangate 8th Floor, Long Beach, CA 90802",
+    phone: "(888) 553-8000",
+    website: "https://www.taxlawyersgroup.com",
+    avvo: "https://lawyers.justia.com/lawyer/victor-j-yoo-124904",
+    calbar: "https://apps.calbar.ca.gov/attorney/Licensee/Detail/175100",
+    korean: true,
+    languages: ["Korean", "Japanese", "Spanish", "English"],
+    specialty: "IRS defense, criminal tax, Offer in Compromise, FBAR, innocent spouse, bankruptcy",
+    experience: "32 years",
+    rating: "Avvo 10.0 · Super Lawyers · Martindale 4.8",
+    freeConsult: true,
+    distance: "~10 miles",
+    note: "Korean, Japanese & Spanish speaking. Super Lawyers rated. Handled IRS amnesty programs. Long Beach office 10 miles from La Mirada. Best Korean-speaking option for serious IRS cases.",
+    tags: ["Korean", "Japanese", "Spanish", "Super Lawyers", "IRS Amnesty", "Criminal Tax", "OIC", "FBAR", "Long Beach"]
+  },
+  {
+    name: "Steven S. Chung",
+    firm: "Law Offices of Steven Chung",
+    city: "Alhambra (main) / La Palma (satellite)",
+    address: "200 S Garfield Ave, Ste 101, Alhambra, CA 91801 — Satellite: 7002 Moody St Ste 228, La Palma",
+    phone: "(818) 925-4699",
+    website: "https://www.stevenchungattorney.com",
+    avvo: "https://www.avvo.com/attorneys/90703-ca-steven-chung-1214943.html",
+    calbar: "https://apps.calbar.ca.gov/attorney/Licensee/Detail/246544",
+    korean: true,
+    languages: ["Korean", "English"],
+    specialty: "Tax controversy, IRS audits, Offer in Compromise, unfiled returns, innocent spouse",
+    experience: "19 years",
+    rating: "Avvo 9.9 · Super Lawyers 2022-2026 · 13 reviews",
+    freeConsult: true,
+    distance: "~3 miles",
+    note: "Closest Korean-speaking tax attorney to La Mirada. La Palma office is 3 miles away. 13 Avvo reviews. Has settled Korean immigrant IRS debts for as low as $100 via OIC.",
+    tags: ["Korean", "Super Lawyers", "OIC", "Closest", "Innocent Spouse", "Unfiled Returns", "La Palma", "Cerritos area"]
+  },
+  {
+    name: "Sungjin Ji",
+    firm: "Ji Law Firm, A Professional Corporation",
+    city: "Fullerton",
+    address: "1370 Brea Blvd Ste 255, Fullerton, CA 92835",
+    phone: "See CalBar profile",
+    website: "https://apps.calbar.ca.gov/attorney/Licensee/Detail/265774",
+    avvo: "https://www.avvo.com/attorneys/92835-ca-sungjin-ji-4288059.html",
+    calbar: "https://apps.calbar.ca.gov/attorney/Licensee/Detail/265774",
+    korean: true,
+    languages: ["Korean", "English"],
+    specialty: "Tax law",
+    experience: "16 years — CalBar #265774",
+    rating: "CalBar verified",
+    freeConsult: false,
+    distance: "~10 miles",
+    note: "Korean attorney — CalBar #265774 confirmed with phone (714) 739-1500. May have Buena Park office (5821 Beach Blvd Ste 100) per third-party listings. Call to confirm location and Korean-language availability.",
+    tags: ["Korean", "Fullerton", "Tax Law"]
+  },
+  {
+    name: "Julie Jung",
+    firm: "JV Law Group",
+    city: "Alhambra",
+    address: "240 South Garfield Avenue, Suite 308, Alhambra, CA 91801",
+    phone: "(714) 752-3270",
+    website: "https://jvlawgroup.com",
+    avvo: "https://www.avvo.com/attorneys/90621-ca-julie-jung-3399097.html",
+    calbar: "https://apps.calbar.ca.gov/attorney/LicenseeSearch/QuickSearch",
+    korean: true,
+    languages: ["Korean", "English"],
+    specialty: "Tax controversy, IRS appeals, business law — admitted to US Tax Court",
+    experience: "18 years",
+    rating: "Avvo 6.8 · US Tax Court admitted",
+    freeConsult: false,
+    distance: "~18 miles",
+    note: "Korean-American firm. Julie Jung admitted to US Tax Court. Of-counsel Eugene Kim has Martindale AV Preeminent and Avvo 10.0. Korean-speaking staff.",
+    tags: ["Korean", "US Tax Court", "IRS Appeals", "Korean-American Firm", "Alhambra"]
+  },
+  {
+    name: "Becky Rose Sebastian",
+    firm: "Morgan Sebastian Law, PC",
+    city: "Orange",
+    address: "1100 Town and Country Road #1250, Orange, CA 92868",
+    phone: "(877) 938-1350 / (714) 844-9338",
+    website: "https://www.morgansebastianlaw.com",
+    avvo: "https://www.avvo.com/attorneys/92868-ca-becky-sebastian-4972081.html",
+    calbar: "https://apps.calbar.ca.gov/attorney/LicenseeSearch/QuickSearch",
+    korean: false,
+    languages: ["English"],
+    specialty: "Tax debt relief, IRS, FTB, CDTFA, EDD, OIC, installment agreements, innocent spouse, unfiled returns",
+    experience: "8 years — JD Whittier Law, LL.M Taxation (with distinction) Loyola Law School — CA bar passed — represents in all 50 states",
+    rating: "Avvo 6.8 · 1 review · 5-star verified client settled $100k+ IRS debt via OIC",
+    freeConsult: true,
+    distance: "~16 miles",
+    note: "Verified client settled over $100k IRS debt via Offer in Compromise on first submission. Free 30-minute consultation. LL.M in Taxation. OC-based but serves all of CA.",
+    tags: ["OIC", "IRS Relief", "FTB", "Innocent Spouse", "Unfiled Returns", "Free Consult", "Orange County", "LL.M Tax"]
+  },
+  {
+    name: "Joseph P. Wilson",
+    firm: "Wilson Tax Law Group, APLC",
+    city: "Newport Beach / Yorba Linda",
+    address: "See wilsontaxlaw.com for offices",
+    phone: "(949) 397-2292",
+    website: "https://wilsontaxlaw.com",
+    avvo: "https://www.avvo.com/attorneys/92660-ca-joseph-wilson-384317.html",
+    calbar: "https://apps.calbar.ca.gov/attorney/Licensee/Detail/228180",
+    korean: false,
+    languages: ["English"],
+    specialty: "Criminal tax, voluntary disclosure, IRS audits, tax fraud, FBAR, offshore compliance",
+    experience: "22 years — Former US Attorney (Tax Div LA), former IRS trial attorney, former FTB attorney",
+    rating: "Avvo 10.0 · 15 reviews (all 5-star) · Super Lawyers · Top 20 CA Boutique Firm",
+    freeConsult: true,
+    distance: "~20 miles",
+    note: "Former DOJ prosecutor who knows exactly how the IRS builds criminal cases. Avvo 10.0 with 15 perfect reviews. Voluntary disclosure specialist — directly relevant for unreported income.",
+    tags: ["Former DOJ Prosecutor", "Avvo 10.0", "Voluntary Disclosure", "Criminal Tax", "IRS Defense", "Super Lawyers", "OIC", "FBAR"]
+  },
+  {
+    name: "Daniel W. Layton",
+    firm: "Tax Law Office of Daniel W. Layton",
+    city: "Newport Beach",
+    address: "23 Corporate Plaza Dr., Suite 100, Newport Beach, CA 92660",
+    phone: "(714) 409-3522",
+    website: "https://taxattorneyoc.com",
+    avvo: "https://www.avvo.com/attorneys/92660-ca-daniel-layton-254388.html",
+    calbar: "https://apps.calbar.ca.gov/attorney/Licensee/Detail/240763",
+    korean: false,
+    languages: ["English"],
+    specialty: "Criminal tax defense, IRS audits, OIC, innocent spouse, FBAR, civil fraud",
+    experience: "21 years — Univ of Chicago Law, former IRS trial attorney, former DOJ criminal tax prosecutor",
+    rating: "Avvo 10.0 · 22 reviews · OCBA Tax Section Chair 3 terms · 30+ published opinions",
+    freeConsult: false,
+    distance: "~20 miles",
+    note: "Former DOJ criminal tax prosecutor who trained IRS agents. 30+ published court opinions. Strong innocent spouse track record. Best for serious criminal-adjacent cases.",
+    tags: ["Former IRS Prosecutor", "Avvo 10.0", "Criminal Tax", "Innocent Spouse", "FBAR", "Orange County"]
+  },
+  {
+    name: "Jayson M. Aquino",
+    firm: "Tax Law Office of Jayson M. Aquino, CPA, Esq.",
+    city: "Garden Grove",
+    address: "12881 Knott Street, Suite 221, Garden Grove, CA 92841",
+    phone: "(714) 589-2121",
+    website: "https://www.aquinocpalaw.com",
+    avvo: "https://www.avvo.com/attorneys/92841-ca-jayson-aquino-4069030.html",
+    calbar: "https://apps.calbar.ca.gov/attorney/Licensee/Detail/280288",
+    korean: false,
+    languages: ["English", "Filipino/Tagalog"],
+    specialty: "IRS defense, FTB, audits, FBAR, OIC, business tax, voluntary disclosure",
+    experience: "14 years — dual licensed attorney AND CPA, established 2010",
+    rating: "Avvo 7.9 · 2 reviews · BBB accredited",
+    freeConsult: true,
+    distance: "~14 miles",
+    note: "Rare dual license: tax attorney + CPA. Handles IRS, FTB, FBAR. Garden Grove office serves LA and OC. Very responsive per reviews. Affordable per clients.",
+    tags: ["Dual Licensed CPA", "IRS Defense", "FTB", "Garden Grove", "Free Consult", "Affordable", "FBAR", "OIC"]
+  },
+  {
+    name: "Raymond J. Bulaon",
+    firm: "RJB Law Offices",
+    city: "Cerritos",
+    address: "18000 Studebaker Road, Suite 700, Cerritos, CA 90703",
+    phone: "(562) 467-8975",
+    website: "https://www.avvo.com/attorneys/90703-ca-raymond-bulaon-1177765.html",
+    avvo: "https://www.avvo.com/attorneys/90703-ca-raymond-bulaon-1177765.html",
+    calbar: "https://apps.calbar.ca.gov/attorney/LicenseeSearch/QuickSearch",
+    korean: false,
+    languages: ["English", "Filipino/Tagalog"],
+    specialty: "Tax, bankruptcy (Ch. 7, 11, 13), debt relief",
+    experience: "28 years — 5,000+ clients — IRS audits, OIC, levy release, innocent spouse, unfiled returns",
+    rating: "Avvo 7.0 · 12 reviews — American Society of Tax Problem Solvers member",
+    freeConsult: false,
+    distance: "~4 miles",
+    note: "Based directly in Cerritos — 4 miles from La Mirada. 28 years experience. Handles tax AND bankruptcy together, useful if debt discharge is part of the solution.",
+    tags: ["Cerritos", "Tax", "Bankruptcy", "Debt Relief", "Local", "4 miles"]
+  },
+  {
+    name: "David E. Libman",
+    firm: "Law Office of David E. Libman, APC",
+    city: "Fullerton",
+    address: "1038 E. Bastanchury Rd., Suite 360, Fullerton, CA 92835",
+    phone: "(714) 835-5740",
+    website: "https://www.avvo.com/attorneys/92835-ca-david-libman-1494892.html",
+    avvo: "https://www.avvo.com/attorneys/92835-ca-david-libman-1494892.html",
+    calbar: "https://apps.calbar.ca.gov/attorney/LicenseeSearch/QuickSearch",
+    korean: false,
+    languages: ["English"],
+    specialty: "Tax disputes, real estate, business law, lawsuits",
+    experience: "24 years — LL.M., CA bar since 2001",
+    rating: "Avvo 10.0 PRO · 6 reviews (all 5-star)",
+    freeConsult: true,
+    distance: "~10 miles",
+    note: "Avvo 10.0 PRO in Fullerton. Primary practice is business, real estate, and civil litigation — call to confirm IRS relief experience specifically before retaining. LL.M from UCLA.",
+    tags: ["Avvo 10.0", "Fullerton", "Tax", "LL.M.", "Free Consult"]
+  },
+  {
+    name: "Thu Thi Vo",
+    firm: "JV Law Group",
+    city: "Buena Park / Alhambra",
+    address: "240 South Garfield Avenue, Suite 308, Alhambra, CA 91801",
+    phone: "(714) 752-3270",
+    website: "https://jvlawgroup.com",
+    avvo: "https://www.avvo.com/attorneys/90621-ca-thu-vo-1909022.html",
+    calbar: "https://apps.calbar.ca.gov/attorney/Licensee/Detail/259179",
+    korean: false,
+    languages: ["English", "Vietnamese"],
+    specialty: "Tax controversy, IRS collections, wage levy release, innocent spouse, audits, appeals, lien release",
+    experience: "17 years — CalBar #259179 — co-founder JV Law Group",
+    rating: "Avvo 6.7 — CalBar active",
+    freeConsult: false,
+    distance: "~5 miles from Buena Park",
+    note: "Buena Park-based attorney at Korean-American firm JV Law Group. Negotiated tax debt settlements, wage levy releases, innocent spouse relief, and lien releases before IRS and state tax agencies. Same firm as Julie Jung.",
+    tags: ["Buena Park", "IRS Collections", "Levy Release", "Innocent Spouse", "Lien Release", "Tax Controversy", "Local"]
+  },
+  {
+    name: "David C. Dodge",
+    firm: "Law Offices of David C. Dodge, Inc.",
+    city: "Irvine (serves Buena Park + all OC and LA)",
+    address: "19200 Von Karman Ave., Ste. 400, Irvine, CA 92612",
+    phone: "(714) 378-4355",
+    website: "http://www.ataxlawyer.com",
+    avvo: "https://lawyers.justia.com/lawyer/david-c-dodge-1497153",
+    calbar: "https://apps.calbar.ca.gov/attorney/Licensee/Detail/195187",
+    korean: false,
+    languages: ["English"],
+    specialty: "IRS audits, appeals, offer in compromise, collection defense, litigation, bankruptcy — tax controversy only",
+    experience: "27 years — dual attorney AND CPA — CalBar #195187",
+    rating: "Free phone consult — Justia listed — 5-star Yelp",
+    freeConsult: true,
+    distance: "~12 miles from Buena Park",
+    note: "Explicitly serves Buena Park. Dual attorney and CPA doing ONLY tax controversy — no distractions. Explicitly focused on best result at least cost. Free phone consult. 5-star Yelp reviews praising results and communication.",
+    tags: ["Dual Licensed CPA", "OIC", "IRS Audits", "Serves Buena Park", "Free Phone Consult", "Tax Only", "Collection Defense", "Affordable"]
+  },
+  {
+    name: "KABA-SoCal",
+    firm: "Korean American Bar Assoc. of Southern California — Free",
+    city: "Los Angeles",
+    address: "1110 N. Virgil Ave, PMB 93648, Los Angeles, CA 90029",
+    phone: "See kabasocal.org",
+    website: "https://www.kabasocal.org",
+    avvo: "https://www.kabasocal.org",
+    calbar: "N/A",
+    korean: true,
+    languages: ["Korean", "English"],
+    specialty: "Free referrals and monthly pro-bono legal clinics for Korean-American community",
+    experience: "501(c)(6) non-profit — verified at kabasocal.org",
+    rating: "Verified non-profit",
+    freeConsult: true,
+    distance: "Serves all LA County",
+    note: "Confirmed real organization at kabasocal.org — 1110 N. Virgil Ave, Los Angeles. Monthly pro-bono legal clinics. Network of Korean-speaking attorneys. Contact them for a free referral.",
+    tags: ["Korean", "FREE", "Referral", "Non-Profit", "Pro Bono", "Los Angeles", "KABA"]
+  },
+  {
+    name: "OCKABA",
+    firm: "Orange County Korean American Bar Association — Free",
+    city: "Orange County",
+    address: "See ockaba.org",
+    phone: "See ockaba.org",
+    website: "https://ockaba.org",
+    avvo: "https://ockaba.org",
+    calbar: "N/A",
+    korean: true,
+    languages: ["Korean", "English"],
+    specialty: "Free referrals to Korean American legal professionals across Orange County",
+    experience: "Non-profit — established 2005",
+    rating: "Verified non-profit",
+    freeConsult: true,
+    distance: "Serves all OC",
+    note: "Confirmed real organization at ockaba.org. Established 2005. Connects Korean-American community with OC attorneys. Closer to La Mirada than KABA-SoCal. Contact for a tax attorney referral.",
+    tags: ["Korean", "FREE", "Referral", "Non-Profit", "Orange County", "OCKABA"]
+  },
+  {
+    name: "IRS Taxpayer Advocate Service (TAS)",
+    firm: "FREE Government Help",
+    city: "National / Los Angeles",
+    address: "Phone or in-person at IRS LA offices",
+    phone: "1-877-777-4778",
+    website: "https://www.irs.gov/advocate",
+    avvo: "https://www.irs.gov/advocate",
+    calbar: "N/A",
+    korean: true,
+    languages: ["Korean via interpreter", "200+ languages"],
+    specialty: "Free IRS intervention — stops collections, levies, garnishments for hardship cases",
+    experience: "Independent government agency",
+    rating: "Government agency — free",
+    freeConsult: true,
+    distance: "Free phone",
+    note: "100% free. Independent of the IRS. Korean interpreter on request. Can actually stop IRS collection while reviewing your case. Call 1-877-777-4778 today.",
+    tags: ["FREE", "Korean via Interpreter", "Government", "Hardship", "No Cost", "Stop Collections"]
+  }
+];
+
+// ── HELPERS ───────────────────────────────────────────────────
+function esc(s) {
+  if (!s) return '';
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+function isBlocked(name, firm) {
+  const h = (name + ' ' + firm).toLowerCase();
+  for (const f of state.blacklist.firms) if (firm.toLowerCase().includes(f.toLowerCase())) return true;
+  for (const l of state.blacklist.lawyers) if (name.toLowerCase().includes(l.toLowerCase())) return true;
+  for (const k of state.blacklist.keywords) if (h.includes(k.toLowerCase())) return true;
+  return false;
+}
+
+function isContacted(name, firm) {
+  const h = (name + ' ' + firm).toLowerCase();
+  return state.contacted.some(c => h.includes(c.name.toLowerCase()));
+}
+
+function getContact(name, firm) {
+  const h = (name + ' ' + firm).toLowerCase();
+  return state.contacted.find(c => h.includes(c.name.toLowerCase()));
+}
+
+// ── NAV ───────────────────────────────────────────────────────
+function nav(id) {
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(el => el.classList.remove('active'));
+  const navEl = document.querySelector('[onclick="nav(\''+id+'\')"]');
+  if (navEl) navEl.classList.add('active');
+  const panel = document.getElementById('panel-' + id);
+  if (panel) panel.classList.add('active');
+  if (id === 'known') renderKnown();
+  if (id === 'blacklist') renderBlacklist();
+  if (id === 'contacted') renderContacted();
+}
+
+// ── SEARCH ────────────────────────────────────────────────────
+function liveSearch() { renderSearch('', 'all'); }
+function quickSearch(term) { renderSearch(term.toLowerCase(), 'all'); }
+
+function matches(a, q) {
+  if (!q) return true;
+  const hay = [a.name, a.firm, a.city, a.specialty, a.note, a.tags.join(' '), a.languages.join(' ')].join(' ').toLowerCase();
+  return q.split(' ').filter(Boolean).every(w => hay.includes(w));
+}
+
+function buildCard(a) {
+  const blocked = isBlocked(a.name, a.firm);
+  const contacted = isContacted(a.name, a.firm);
+  const ct = getContact(a.name, a.firm);
+  const safeN = a.name.replace(/'/g, "\'");
+  const safeF = a.firm.replace(/'/g, "\'");
+  const isKYCC = a.name.indexOf('KYCC') !== -1;
+
+  const badges = [
+    a.korean ? '<span class="badge badge-korean">🇰🇷 한국어</span>' : '',
+    a.freeConsult ? '<span class="badge badge-free">Free consult</span>' : '',
+    contacted && ct ? '<span class="badge badge-contacted">✅ ' + esc(ct.outcome) + '</span>' : ''
+  ].join('');
+
+  const tags = a.tags.map(t =>
+    '<span style="display:inline-flex;margin:0 3px 3px 0;padding:2px 8px;background:var(--surface2);color:var(--text2);border-radius:99px;font-size:11px;border:1px solid var(--border)">' + esc(t) + '</span>'
+  ).join('');
+
+  const links = [
+    a.website && a.website !== 'N/A' ? '<a href="' + esc(a.website) + '" target="_blank" class="btn btn-sm">🌐 Website</a>' : '',
+    a.avvo && a.avvo !== a.website && a.avvo !== 'N/A' ? '<a href="' + esc(a.avvo) + '" target="_blank" class="btn btn-sm">⭐ Avvo</a>' : '',
+    a.calbar && a.calbar !== 'N/A' ? '<a href="' + esc(a.calbar) + '" target="_blank" class="btn btn-sm">⚖️ CalBar</a>' : '',
+  ].join('');
+
+  const urgentFlag = isKYCC
+    ? '<div style="position:absolute;top:0;right:0;background:#d63a1a;color:#fff;font-size:10px;font-weight:700;padding:4px 10px;border-radius:0 var(--radius) 0 var(--radius-sm);letter-spacing:.04em;text-transform:uppercase">⚡ Check Here First</div>'
+    : '';
+
+  const cardStyle = isKYCC
+    ? 'result-card korean-highlight' + (contacted ? ' contacted-dim' : '') + '" style="border:2px solid #d63a1a;position:relative'
+    : 'result-card ' + (a.korean ? 'korean-highlight' : '') + ' ' + (contacted ? 'contacted-dim' : '') + '" style="position:relative';
+
+  return '<div class="' + cardStyle + '">'
+    + urgentFlag
+    + '<div class="result-header" style="' + (isKYCC ? 'margin-top:14px' : '') + '"><div><div class="attorney-name">' + esc(a.name) + '</div><div class="firm-name">' + esc(a.firm) + '</div></div>'
+    + '<div class="badges">' + badges + '</div></div>'
+    + '<div class="result-meta">'
+    + '<span>📍 ' + esc(a.city) + '</span>'
+    + '<span>📏 ' + esc(a.distance) + '</span>'
+    + '<span>📞 ' + esc(a.phone) + '</span>'
+    + (a.rating ? '<span>⭐ ' + esc(a.rating) + '</span>' : '')
+    + '</div>'
+    + '<div style="font-size:11px;color:var(--text3);margin-bottom:8px">🗣️ ' + esc(a.languages.join(', ')) + '</div>'
+    + '<div class="result-note">' + esc(a.note) + '</div>'
+    + '<div style="margin-bottom:10px">' + tags + '</div>'
+    + '<div class="result-actions">'
+    + links
+    + '<button class="btn btn-sm ' + (contacted ? 'btn-danger' : 'btn-green') + '" onclick="contactAtty(\'' + safeN + '\')">' + (contacted ? '↩ Unmark' : '✅ Mark Contacted') + '</button>'
+    + '</div></div>';
+}
+
+function renderSearch(q, f) {
+  const area = document.getElementById('search-results-area');
+  if (!area) return;
+  let results = DB.filter(a => {
+    if (f === 'korean' && !a.korean) return false;
+    if (f === 'free' && !a.freeConsult) return false;
+    if (f === 'close') {
+      const d = parseFloat((a.distance || '99').replace(/[^0-9.]/g, ''));
+      if (d >= 10) return false;
+    }
+    return matches(a, q);
+  });
+
+  // Sort: KYCC always first, then not-contacted (Korean first within), contacted at the end
+  results.sort((a, b) => {
+    const aKYCC = a.name.indexOf('KYCC') !== -1 ? 0 : 1;
+    const bKYCC = b.name.indexOf('KYCC') !== -1 ? 0 : 1;
+    if (aKYCC !== bKYCC) return aKYCC - bKYCC;
+    const ac = isContacted(a.name, a.firm) ? 1 : 0;
+    const bc = isContacted(b.name, b.firm) ? 1 : 0;
+    if (ac !== bc) return ac - bc;
+    if (a.korean && !b.korean) return -1;
+    if (!a.korean && b.korean) return 1;
+    const da = parseFloat((a.distance || '99').replace(/[^0-9.]/g,''));
+    const db2 = parseFloat((b.distance || '99').replace(/[^0-9.]/g,''));
+    return da - db2;
+  });
+
+  document.getElementById('nb-res').textContent = results.length;
+
+  if (!results.length) {
+    area.innerHTML = '<div class="empty"><div class="empty-icon">🔍</div><div class="empty-msg">No attorneys match. Try broader terms.</div></div>';
+    return;
+  }
+  area.innerHTML = results.map(buildCard).join('');
+}
+
+function contactAtty(name) {
+  const existing = state.contacted.find(c => c.name === name);
+  if (existing) {
+    // Toggle off — remove from contacted
+    state.contacted = state.contacted.filter(c => c.name !== name);
+  } else {
+    state.contacted.push({ name, outcome: 'Contacted', date: new Date().toLocaleDateString() });
+  }
+  save(); updateBadges();
+  renderSearch('', 'all');
+}
+
+
+// ── KNOWN/VERIFIED PANEL ──────────────────────────────────────
+function renderKnown() {
+  const el = document.getElementById('known-list');
+  const visible = DB.filter(a => !isBlocked(a.name, a.firm));
+  const blocked = DB.filter(a => isBlocked(a.name, a.firm));
+  let html = visible.map(buildCard).join('');
+  if (blocked.length) {
+    html += '<div class="section-header">Blocked (' + blocked.length + ')</div>';
+    html += blocked.map(buildCard).join('');
+  }
+  el.innerHTML = html || '<div class="empty"><div class="empty-msg">All attorneys have been blocked.</div></div>';
+}
+
+// ── BLACKLIST removed ──
+
+// ── CONTACTED inline (moved to card) ──
+
+// ── BADGES ────────────────────────────────────────────────────
+function updateBadges() {
+  const nr = document.getElementById('nb-res');
+  if (nr) nr.textContent = DB.filter(a => !isContacted(a.name, a.firm)).length || DB.length;
+}
+
+// ── INIT ──────────────────────────────────────────────────────
+updateBadges();
+renderSearch('', 'all');
+</script>
+</body>
+</html>
